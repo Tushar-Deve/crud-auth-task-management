@@ -3,6 +3,8 @@ const cookieParser=require("cookie-parser");
 const cors = require("cors");
 require("dotenv").config();
 require("./config/db");
+const path = require("path");
+const fs = require("fs");
 
 const app = express();
 
@@ -23,7 +25,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 /* ✅ STATIC FILES HERE */
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 const authRoutes = require("./routes/authRoutes");
 const taskRoutes = require("./routes/taskRoutes");
