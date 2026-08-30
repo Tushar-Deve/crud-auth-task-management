@@ -1,7 +1,7 @@
 const express=require("express");
 const router=express.Router();
 
-const { createTask, getTask, updateTask, deleteTask, uploadFile}=require("../controllers/taskController");
+const { createTask, getTask, getTaskById, updateTask, deleteTask, getTaskHistory, getUnreadTaskHistoryCount, markTaskHistoryAsRead, uploadFile}=require("../controllers/taskController");
 const authMiddleware=require("../middleware/authMiddleware");
 const upload = require("../middleware/upload");
 
@@ -9,7 +9,15 @@ router.post("/createtask",upload.single("file"),authMiddleware,createTask);
 
 router.get("/gettask",authMiddleware,getTask);
 
-router.patch("/updatetask/:id",authMiddleware,updateTask);
+router.get("/gettask/:id",authMiddleware,getTaskById);
+
+router.get("/gettaskhistory", authMiddleware, getTaskHistory);
+
+router.get("/taskhistory/unread-count",authMiddleware,getUnreadTaskHistoryCount);
+
+router.patch("/taskhistory/mark-read",authMiddleware,markTaskHistoryAsRead);
+
+router.patch("/updatetask/:id",authMiddleware, upload.single("file"),updateTask);
 
 router.delete("/deletetask/:id",authMiddleware,deleteTask);
 

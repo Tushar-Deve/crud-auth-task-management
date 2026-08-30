@@ -10,7 +10,6 @@ const authMiddleware = (req, res, next) => {
          req.headers.authorization &&
          req.headers.authorization.startsWith("Bearer ")
       ) {
-         console.log("Headers:", req.headers.authorization);
          token = req.headers.authorization.split(" ")[1];
       }
 
@@ -36,7 +35,7 @@ const authMiddleware = (req, res, next) => {
 
    } catch (error) {
 
-      console.log(error.name);
+      console.error("AUTH MIDDLEWARE ERROR:", error.name);
 
       if (error.name === "TokenExpiredError") {
          return res.status(401).json({

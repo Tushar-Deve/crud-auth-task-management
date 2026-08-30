@@ -1,9 +1,10 @@
-const safeUser=(user)=>{
-    return{
-    id:user.id,
-    email:user.email,
-    role:user.role
-};
+const safeUser = (user) => {
+    return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+    };
 };
 
-module.exports=safeUser;
+module.exports = safeUser;

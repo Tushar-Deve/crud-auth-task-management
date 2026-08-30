@@ -14,6 +14,12 @@ async function seed() {
       `);
 
     await db.query(`
+  ALTER TABLE "User"
+  ADD COLUMN IF NOT EXISTS "failedLoginAttempts" INTEGER DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS "lockedUntil" TIMESTAMP NULL;
+`);
+
+    await db.query(`
         CREATE TABLE IF NOT EXISTS "Task"(
         id SERIAL PRIMARY KEY,
         title VARCHAR(100),

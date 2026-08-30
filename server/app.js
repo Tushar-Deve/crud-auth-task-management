@@ -13,12 +13,16 @@ const uploadDir = path.join(__dirname, "uploads");
 
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
-  console.log("Uploads folder created");
 }
 
 
 //Cors Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 
 //Built in Middleware
 app.use(express.json());
@@ -29,8 +33,10 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 const authRoutes = require("./routes/authRoutes");
 const taskRoutes = require("./routes/taskRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 app.use("/authRoutes",authRoutes);
 app.use("/taskRoutes",taskRoutes);
+app.use("/adminRoutes",adminRoutes);
 
 
 //Test routes

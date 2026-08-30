@@ -12,23 +12,28 @@ const sendEmail = require("../utils/sendEmail");   // This Utils use for transpo
 const safeUser = require("../utils/safeUser");   // sensitive data remove
 
 
-// ---------------
+const sendOtpEmail = require("../utils/sendOTPEmail");
+const { saveOtp, getOtp, deleteOtp, } = require("../utils/otpStore");
+
+
+// --------------------
 // RegisterUser
-// ---------------
+// --------------------
 
 exports.registerUser = async (req, res) => {
+
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password } = req.body;
 
         // Required fields
-
-        if (!name || !email || !password || !role) {
+        if (!name || !email || !password) {
             return res.status(400).json({
                 success: false,
                 message: "All fields are required"
             });
         }
 
+        // Email validation
         if (!email.includes("@")) {
             return res.status(400).json({
                 success: false,
@@ -36,17 +41,9 @@ exports.registerUser = async (req, res) => {
             });
         }
 
-        if (role !== "user" && role !== "admin") {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid role"
-            });
-        }
-
-        // 1. check if user already exist
-
+        // Check if user already exists
         const result = await db.query(
-            `SELECT * FROM "User" where email=$1`,
+            `SELECT * FROM "User" WHERE email=$1`,
             [email]
         );
 
@@ -59,9 +56,9 @@ exports.registerUser = async (req, res) => {
             });
         }
 
-        // 2. Hash password bcrypt
-
-        const strongPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
+        // Password validation
+        const strongPassword =
+            /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
 
         if (!strongPassword.test(password)) {
             return res.status(400).json({
@@ -70,35 +67,151 @@ exports.registerUser = async (req, res) => {
             });
         }
 
+        // Hash password
         const salt = await bcrypt.genSalt(12);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const newUser = await db.query(
-            `INSERT INTO "User"(name,email,password,role)
-            VALUES($1,$2,$3,$4)
-            RETURNING id, name, email, role`,
-            [name, email, hashedPassword, role]
-        );
+        // Generate 6-digit OTP 
 
-        const safe=safeUser(newUser.rows[0]);       // sensitive data remove case
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-        return res.status(201).json({
+        deleteOtp(email);
+
+        saveOtp(email, {
+            name,
+            email,
+            password: hashedPassword,
+            otp,
+        });
+
+        const emailSent = await sendOtpEmail(email, otp);
+
+        if (!emailSent) {
+            deleteOtp(email);
+            return res.status(500).json
+                ({
+                    success: false,
+                    message: "Failed to send OTP",
+                });
+        }
+
+        return res.status(200).json({
             success: true,
-            message: "User Register Successfully",
-            user: safe                             // Safe response return 
-        })
+            message: "OTP sent to your email",
+        });
 
 
-    }
 
-    catch (error) {
+        // Create user
+        // Public registration always creates a normal user
+        // const newUser = await db.query(
+        //     `INSERT INTO "User"(name, email, password, role)
+        //      VALUES($1, $2, $3, $4)
+        //      RETURNING id, name, email, role`,
+        //     [name, email, hashedPassword, "user"]
+        // );
+
+        // const safe = safeUser(newUser.rows[0]);
+
+        // return res.status(201).json({
+        //     success: true,
+        //     message: "User Register Successfully",
+        //     user: safe
+        // });
+
+    } catch (error) {
         console.error(error);
+
         return res.status(500).json({
             success: false,
             message: error.message
         });
     }
-}
+};
+
+
+
+// --------------------
+// Verify Register OTP
+// --------------------
+
+exports.verifyRegisterOtp = async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+
+        // 1. Required fields
+        if (!email || !otp) {
+            return res.status(400).json({
+                success: false,
+                message: "Email and OTP are required",
+            });
+        }
+
+        // 2. Get temporary registration data
+        const registrationData = getOtp(email);
+
+        if (!registrationData) {
+            return res.status(400).json({
+                success: false,
+                message: "OTP expired or registration session not found",
+            });
+        }
+
+        // 3. Check OTP expiry
+        const isExpired =
+            Date.now() - registrationData.createdAt > 60 * 1000;
+
+        if (isExpired) {
+            deleteOtp(email);
+
+            return res.status(400).json({
+                success: false,
+                message: "OTP expired. Please register again.",
+            });
+        }
+
+        // 4. Check OTP
+        if (registrationData.otp !== otp.toString()) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid OTP",
+            });
+        }
+
+        // 5. Create user in database
+        const newUser = await db.query(
+            `INSERT INTO "User"(name, email, password, role)
+             VALUES($1, $2, $3, $4)
+             RETURNING id, name, email, role`,
+            [
+                registrationData.name,
+                registrationData.email,
+                registrationData.password,
+                "user",
+            ]
+        );
+
+        // 6. Remove temporary registration data
+        deleteOtp(email);
+
+        // 7. Safe user response
+        const safe = safeUser(newUser.rows[0]);
+
+        return res.status(201).json({
+            success: true,
+            message: "Email verified and user registered successfully",
+            user: safe,
+        });
+
+    } catch (error) {
+        console.error("Verify Register OTP Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "OTP verification failed",
+        });
+    }
+};
 
 // ------------
 // LoginUser
@@ -108,160 +221,324 @@ exports.loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // 1. user find 
-
+        // 1. Required fields
         if (!email || !password) {
-            return res.status(400).json(
-                {
-                    success: false,
-                    message: "ERROR: All Fields are Required",
-                }
-            )
+            return res.status(400).json({
+                success: false,
+                message: "ERROR: All Fields are Required",
+            });
         }
 
+        // 2. Find user
         const { rows } = await db.query(
-            ` SELECT * FROM "User" where LOWER(email)=LOWER($1)`,
-            [email]);
+            `SELECT * FROM "User" WHERE LOWER(email)=LOWER($1)`,
+            [email]
+        );
 
         if (rows.length === 0) {
             return res.status(404).json({
                 success: false,
-                message: "ERROR:User not found"
-            })
+                message: "ERROR: User not found"
+            });
         }
 
         const user = rows[0];
 
-        const isMatch = await bcrypt.compare(password, user.password);
+        // 3. Check temporary account protection
+        if (
+            user.lockedUntil &&
+            new Date(user.lockedUntil) > new Date()
+        ) {
+            return res.status(429).json({
+                success: false,
+                message: "Too many failed login attempts. Please try again after 15 minutes."
+            });
+        } 
 
+        // 4. Check password
+        const isMatch = await bcrypt.compare(
+            password,
+            user.password
+        );
+
+        // 5. Wrong password
         if (!isMatch) {
+
+            const failedAttempts =
+                (user.failedLoginAttempts || 0) + 1;
+
+            // Lock account after 5 failed attempts
+            if (failedAttempts >= 5) {
+
+                await db.query(
+                    `UPDATE "User"
+                     SET "failedLoginAttempts" = $1,
+                         "lockedUntil" = NOW() + INTERVAL '15 minutes'
+                     WHERE id = $2`,
+                    [failedAttempts, user.id]
+                );
+
+                return res.status(429).json({
+                    success: false,
+                    message: "Too many failed login attempts. Please try again after 15 minutes."
+                });
+            }
+
+            // Update failed attempts
+            await db.query(
+                `UPDATE "User"
+                 SET "failedLoginAttempts" = $1
+                 WHERE id = $2`,
+                [failedAttempts, user.id]
+            );
+
             return res.status(401).json({
                 success: false,
                 message: "Invalid Credential",
-            })
+            });
         }
 
-        // JWT Token 
+        // 6. Correct password
+        // Reset failed login protection
+        await db.query(
+            `UPDATE "User"
+             SET "failedLoginAttempts" = 0,
+                 "lockedUntil" = NULL
+             WHERE id = $1`,
+            [user.id]
+        );
 
+        // 7. JWT Payload
         const payLoad = {
             id: user.id,
             email: user.email,
-            role:user.role
+            role: user.role
         };
 
+        // 8. Access Token
         const accessToken = jwt.sign(
             payLoad,
             process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES_IN }
+            {
+                expiresIn: process.env.JWT_EXPIRES_IN
+            }
         );
 
-        const refreshToken = jwt.sign(
-            { id: user.id },
-            process.env.JWT_REFRESH_SECRET,
-            { expiresIn: process.env.JWT_REFRESH_SECRET_EXPIRES_IN }
-        );
+        // 9. Convert JWT expiry to milliseconds for cookie
+        const expiresIn = process.env.JWT_EXPIRES_IN;
 
+        let cookieMaxAge;
+
+        if (expiresIn.endsWith("s")) {
+            cookieMaxAge = parseInt(expiresIn) * 1000;
+        } else if (expiresIn.endsWith("m")) {
+            cookieMaxAge = parseInt(expiresIn) * 60 * 1000;
+        } else if (expiresIn.endsWith("h")) {
+            cookieMaxAge = parseInt(expiresIn) * 60 * 60 * 1000;
+        } else {
+            throw new Error("Invalid JWT_EXPIRES_IN format");
+        }
+
+        // 10. Store Access Token in HTTP-only cookie
         res.cookie("accessToken", accessToken, {
             httpOnly: true,
-            secure: false, // ⚠️ production me true (https)
+            secure: false, // production me true (HTTPS)
             sameSite: "Strict",
-            maxAge: 15 * 60 * 1000 // 15 min
+            maxAge: cookieMaxAge
         });
 
-        res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            secure: false,
-            sameSite: "Strict",
-            maxAge: 7 * 24 * 60 * 60 * 1000
-        });
+        // 11. Safe user data
+        const safe = safeUser(user);;
 
-        await db.query(
-            `UPDATE "User" SET refresh_token = $1 WHERE id = $2`,
-            [refreshToken, user.id]
-        );
-
-        // password remo    ve (optional)
-        const safe = safeUser(user);
-
-        res.status(200).json({
+        // 12. Response
+        return res.status(200).json({
             success: true,
             message: "Login successful",
             accessToken,
             user: safe
         });
-    }
-    catch (error) {
+
+    } catch (error) {
         console.error(error);
+
         return res.status(500).json({
             success: false,
-            messgae: error.message
+            message: error.message
         });
     }
-}
+};
+
+
+// ----------------------
+// Get Profile API
+// ----------------------
+
+exports.getProfile = async (req, res) => {
+    try {
+
+        // Logged-in user ID from JWT middleware
+        const userId = req.user.id;
+
+        const result = await db.query(
+            `SELECT id, name, email, role, "createdAt"
+             FROM "User"
+             WHERE id = $1`,
+            [userId]
+        );
+
+        const user = result.rows[0];
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            user
+        });
+
+    } catch (error) {
+
+        console.error("Get Profile Error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to get profile"
+        });
+    }
+};
+
 
 // --------------------
 // Refresh Token API 
 // ....................
 
-exports.refreshToken = async (req, res) => {
+// exports.refreshToken = async (req, res) => {
+//     try {
+
+//         console.log("========== REFRESH TOKEN API ==========");
+
+//         const token = req.cookies.refreshToken;
+
+//          console.log("Refresh Token:", token)
+
+//         // ❌ no refresh token
+//         if (!token) {
+//             return res.status(401).json({
+//                 success: false,
+//                 message: "No refresh token"
+//             });
+//         }
+
+//         // 🔐 verify refresh token
+//         const decoded = jwt.verify(
+//             token,
+//             process.env.JWT_REFRESH_SECRET
+//         );
+
+//           console.log("Decoded Refresh Token:", decoded);
+
+//         // 🔎 DB se user fetch
+//         const result = await db.query(
+//             'SELECT * FROM "User" WHERE id = $1',
+//             [decoded.id]
+//         );
+
+//         const user = result.rows[0];
+
+//            console.log("Refresh User:", user)
+
+//         // ❌ mismatch / invalid
+//         if (!user || user.refresh_token !== token) {
+//             return res.status(403).json({
+//                 success: false,
+//                 message: "Invalid refresh token"
+//             });
+//         }
+
+//         // 🆕 new access token generate
+//         const newAccessToken = jwt.sign(
+//             { id: user.id },
+//             process.env.JWT_SECRET,
+//             { expiresIn: "15m" }
+//         );
+
+//          console.log("✅ New Access Token Generated");
+
+//         // 🍪 cookie update
+//         res.cookie("accessToken", newAccessToken, {
+//             httpOnly: true,
+//             secure: false,
+//             sameSite: "Strict",
+//             maxAge: 15 * 60 * 1000
+//         });
+
+//         return res.status(200).json({
+//             success: true,
+//             message: "New access token generated",
+//              accessToken: newAccessToken
+//         });
+
+//     } catch (error) {
+
+//         console.error("❌ REFRESH ERROR:", error);
+
+//         return res.status(403).json({
+//             success: false,
+//             message: "Refresh token expired or invalid"
+//         });
+//     }
+// };
+
+// --------------------
+// Logout API   
+// --------------------
+
+exports.logout = async (req, res) => {
     try {
-        const token = req.cookies.refreshToken;
 
-        // ❌ no refresh token
-        if (!token) {
-            return res.status(401).json({
-                success: false,
-                message: "No refresh token"
-            });
-        }
+        // Current user id
+        const userId = req.user.id;
 
-        // 🔐 verify refresh token
-        const decoded = jwt.verify(
-            token,
-            process.env.JWT_REFRESH_SECRET
+        // Remove refresh token from database
+        await db.query(
+            `UPDATE "User"
+             SET refresh_token = NULL
+             WHERE id = $1`,
+            [userId]
         );
 
-        // 🔎 DB se user fetch
-        const result = await db.query(
-            'SELECT * FROM "User" WHERE id = $1',
-            [decoded.id]
-        );
-
-        const user = result.rows[0];
-
-        // ❌ mismatch / invalid
-        if (!user || user.refresh_token !== token) {
-            return res.status(403).json({
-                success: false,
-                message: "Invalid refresh token"
-            });
-        }
-
-        // 🆕 new access token generate
-        const newAccessToken = jwt.sign(
-            { id: user.id },
-            process.env.JWT_SECRET,
-            { expiresIn: "15m" }
-        );
-
-        // 🍪 cookie update
-        res.cookie("accessToken", newAccessToken, {
+        // Clear access token cookie
+        res.clearCookie("accessToken", {
             httpOnly: true,
             secure: false,
             sameSite: "Strict",
-            maxAge: 15 * 60 * 1000
+        });
+
+        // Clear refresh token cookie
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: false,
+            sameSite: "Strict",
         });
 
         return res.status(200).json({
             success: true,
-            message: "New access token generated"
+            message: "Logout successful",
         });
 
     } catch (error) {
-        return res.status(403).json({
+
+        console.error("Logout Error:", error);
+
+        return res.status(500).json({
             success: false,
-            message: "Refresh token expired or invalid"
+            message: "Logout failed",
         });
+
     }
 };
 
@@ -395,8 +672,6 @@ exports.resetPassword = async (req, res) => {
         const { token } = req.params;
         const { newPassword } = req.body;
 
-        console.log("TOKEN:", token);
-
         // validation
         if (!token || !newPassword) {
             return res.status(400).json({
@@ -412,7 +687,6 @@ exports.resetPassword = async (req, res) => {
         )
 
         const user = result.rows[0];
-        console.log("USER:", user);
 
         if (!user) {
             return res.status(400).json({
@@ -450,8 +724,8 @@ exports.resetPassword = async (req, res) => {
 
     catch (error) {
         return res.status(500).json({
-            succces: false,
-            meesage: "Reset Password Error"
+            success: false,
+            message: "Reset Password Error"
         });
     }
 }
