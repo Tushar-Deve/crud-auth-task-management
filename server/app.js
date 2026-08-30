@@ -23,6 +23,7 @@ app.use(
       "http://localhost:3000",
       "https://crud-auth-task-management.vercel.app",
     ],
+    credentials: true,
   })
 );
 
