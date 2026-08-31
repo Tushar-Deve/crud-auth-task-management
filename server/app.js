@@ -8,6 +8,8 @@ const fs = require("fs");
 
 const app = express();
 
+app.set("trust proxy", 1);
+
 // ✅ uploads folder auto-create
 const uploadDir = path.join(__dirname, "uploads");
 
