@@ -13,7 +13,7 @@ const loginLimiter= rateLimit({
 
 const forgotLimiter= rateLimit({
     windowMs:15 * 60 * 1000,
-    max:3,
+    max:5,
     message:{
         success:false,
         message:"Too many requests,Try again Later"

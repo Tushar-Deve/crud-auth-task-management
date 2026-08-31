@@ -634,8 +634,7 @@ exports.forgotPassword = async (req, res) => {
         );
 
         // 🔗 reset link (frontend URL)
-        const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
-
+               const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
         await sendEmail(
             user.email,
             "Password Reset",
