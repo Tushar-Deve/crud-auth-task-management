@@ -1,34 +1,34 @@
-const nodeMailer = require("nodemailer");
+const { Resend } = require("resend");
 
 require("dotenv").config();
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // --------------------
 // Send OTP Email
 // --------------------
 
 const sendOtpEmail = async (to, otp) => {
-try {
-const transporter = nodeMailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-    },
-});
+    try {
 
-    await transporter.verify();
+        const { data, error } = await resend.emails.send({
+            from: "onboarding@resend.dev",
+            to: [to],
+            subject: "Verify Your Email - CRUD Auth Task Management Portal",
 
-    await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: to,
-        subject: "Verify Your Email - CRUD Auth Task Management Portal",
+            text: `Your OTP is ${otp}. This OTP is valid for 1 minute.`,
 
-        text: `Your OTP is ${otp}. This OTP is valid for 1 minute.`,
+            html: `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email</title>
+</head>
 
-        html: `
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Verify Your Email</title> </head> <body style="margin:0; padding:0; background-color:#f1f5f9; font-family:Arial, Helvetica, sans-serif;">
+<body style="margin:0; padding:0; background-color:#f1f5f9; font-family:Arial, Helvetica, sans-serif;">
+
 <div style="width:100%; padding:24px 12px;">
 
     <div style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:16px; overflow:hidden;">
@@ -85,15 +85,28 @@ const transporter = nodeMailer.createTransport({
     </div>
 
 </div>
-</body> </html> `, });
 
-    return true;
+</body>
+</html>
+`,
 
-} catch (error) {
-    console.error("OTP Email Error:", error.message);
-    return false;
-}
+        });
 
+        if (error) {
+            console.error("Resend OTP Email Error:", error);
+            return false;
+        }
+
+        console.log("OTP Email sent successfully:", data?.id);
+
+        return true;
+
+    } catch (error) {
+
+        console.error("OTP Email Error:", error.message);
+
+        return false;
+    }
 };
 
 module.exports = sendOtpEmail;
