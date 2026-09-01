@@ -1,8 +1,16 @@
-const { Resend } = require("resend");
+const nodemailer = require("nodemailer");
 
 require("dotenv").config();
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: process.env.SMTP_SECURE === "true",
+    auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+    },
+});
 
 // --------------------
 // Send OTP Email
@@ -11,9 +19,9 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 const sendOtpEmail = async (to, otp) => {
     try {
 
-        const { data, error } = await resend.emails.send({
-            from: "onboarding@resend.dev",
-            to: [to],
+        await transporter.sendMail({
+            from: `"CRUD Auth Task Management Portal" <${process.env.SMTP_USER}>`,
+            to,
             subject: "Verify Your Email - CRUD Auth Task Management Portal",
 
             text: `Your OTP is ${otp}. This OTP is valid for 1 minute.`,
@@ -89,15 +97,9 @@ const sendOtpEmail = async (to, otp) => {
 </body>
 </html>
 `,
-
         });
 
-        if (error) {
-            console.error("Resend OTP Email Error:", error);
-            return false;
-        }
-
-        console.log("OTP Email sent successfully:", data?.id);
+        console.log("OTP Email sent successfully");
 
         return true;
 
