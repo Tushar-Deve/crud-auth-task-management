@@ -6,6 +6,7 @@ import { loginSuccess } from "@/redux/slices/authSlice";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { loginUser, forgotPassword } from "@/services/authService";
+import Footer from "@/components/reusable/footer/Footer";
 import {
   Eye,
   EyeOff,
@@ -298,7 +299,7 @@ export default function LoginPage() {
               </form>
             </div>
 
-            <aside className="w-full ">
+            <aside className="hidden w-full lg:block">
               {/* Role information card */}
               <section
                 aria-labelledby="role-info-heading"
@@ -352,13 +353,7 @@ export default function LoginPage() {
         </div>
       </main >
 
-      {/* Footer */}
-      < footer className="relative z-10 bg-slate-950/80 px-4 py-4 text-center backdrop-blur-sm sm:px-6" >
-        <p className="text-xs font-large leading-relaxed tracking-wide text-slate-400 sm:text-lg">
-          © 2026 CRUD Auth Task Management Portal.
-          <br className="sm:hidden" /> All Rights Reserved.
-        </p>
-      </footer >
+      <Footer />
     </div >
   </>
   );
