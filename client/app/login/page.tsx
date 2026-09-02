@@ -139,7 +139,7 @@ export default function LoginPage() {
         }
       `}</style>
 
-    <div className="relative flex h-screen flex-col overflow-hidden">
+    <div className="relative flex min-h-screen flex-col overflow-x-hidden">
       {/* Background layer — matches Welcome Page theme */}
       <div
         className="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -160,9 +160,9 @@ export default function LoginPage() {
       />
 
       {/* Main content — centered login card */}
-      <main className="relative z-10 flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+      <main className="relative z-10 flex flex-1 items-center justify-center px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <div className="animate-fade-in-up w-full max-w-5xl">
-          <div className="grid gap-8 rounded-3xl border border-white/20 bg-white/10 p-8 shadow-2xl shadow-indigo-950/40 backdrop-blur-xl lg:grid-cols-[1.6fr_1fr] sm:p-10">
+          <div className="grid gap-8 rounded-3xl border border-white/20 bg-white/10 p-8 shadow-2xl shadow-indigo-950/40 backdrop-blur-xl lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] sm:p-10">
             {/* Header — logo, heading, subheading */}
             <div>
               <header className="mb-8 text-center">
@@ -351,8 +351,7 @@ export default function LoginPage() {
             </aside>
           </div>
         </div>
-         <Footer />
-      </main >
+      </main>
       <Footer />
     </div >
   </>
