@@ -270,31 +270,38 @@ export default function LoginPage() {
                     isForgotPassword ? "Send Reset Link" : "Login To Dashboard"
                   )}
                 </button>
-                {isForgotPassword ? (
-                  <button
-                    type="button"
-                    onClick={() => setIsForgotPassword(false)}
-                    className="mx-auto block text-sm font-medium text-indigo-300 transition-colors hover:text-indigo-200"
-                  >
-                    ← Back to Login
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => setIsForgotPassword(true)}
-                    className="mx-auto block text-sm font-medium text-indigo-300 transition-colors hover:text-indigo-200"
-                  >
-                    Forgot Password?
-                  </button>
-                )}
-                {!isForgotPassword && (
-                  <button
-                    type="button"
-                    onClick={() => router.push("/register")}
-                    className="mx-auto block text-sm font-medium text-indigo-300 transition-colors hover:text-indigo-200"
-                  >
-                    Don't have an account? Register
-                  </button>
+
+                {/* Deployment Hide  */}
+                
+                {process.env.NODE_ENV === "development" && (
+                  <>
+                    {isForgotPassword ? (
+                      <button
+                        type="button"
+                        onClick={() => setIsForgotPassword(false)}
+                        className="mx-auto block text-sm font-medium text-indigo-300 transition-colors hover:text-indigo-200"
+                      >
+                        ← Back to Login
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setIsForgotPassword(true)}
+                        className="mx-auto block text-sm font-medium text-indigo-300 transition-colors hover:text-indigo-200"
+                      >
+                        Forgot Password?
+                      </button>
+                    )}
+                    {!isForgotPassword && (
+                      <button
+                        type="button"
+                        onClick={() => router.push("/register")}
+                        className="mx-auto block text-sm font-medium text-indigo-300 transition-colors hover:text-indigo-200"
+                      >
+                        Don't have an account? Register
+                      </button>
+                    )}
+                  </>
                 )}
               </form>
             </div>
