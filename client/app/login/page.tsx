@@ -6,7 +6,7 @@ import { loginSuccess } from "@/redux/slices/authSlice";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { loginUser, forgotPassword } from "@/services/authService";
-import Footer from "@/components/reusable/footer/Footer";
+import Footer from "@/components/reusable/footer";
 import {
   Eye,
   EyeOff,
