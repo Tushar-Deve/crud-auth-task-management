@@ -351,6 +351,7 @@ export default function LoginPage() {
             </aside>
           </div>
         </div>
+         <Footer />
       </main >
       <Footer />
     </div >
