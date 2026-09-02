@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Footer from "@/components/reusable/footer";
 
 // Replace with a local image when ready, e.g. "/images/hero-workspace.jpg"
 const HERO_BACKGROUND_IMAGE =
@@ -104,12 +105,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        <footer className="animate-fade-in bg-slate-950 px-4 py-8 text-center sm:px-6">
-          <p className="text-sm font-medium tracking-wide text-slate-400 sm:text-base">
-            © 2026 CRUD Auth Task Management Portal. All Rights Reserved.
-          </p>
-        </footer>
+        <Footer />
       </div>
     </>
   );
