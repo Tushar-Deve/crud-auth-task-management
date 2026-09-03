@@ -316,11 +316,11 @@ export default function LoginPage() {
                   id="role-info-heading"
                   className="mb-4 text-center text-lg font-bold uppercase tracking-wider text-indigo-200"
                 >
-                  Role Information
+                  Login Credentials
                 </h2>
 
                 <div className="space-y-5">
-                  {/* Admin role */}
+                  {/* Admin login */}
                   <div className="rounded-xl border border-indigo-400/20 bg-indigo-500/10 p-4">
                     <div className="mb-2 flex items-center gap-2">
                       <Shield
@@ -328,29 +328,27 @@ export default function LoginPage() {
                         aria-hidden="true"
                       />
                       <h3 className="text-lg font-bold text-white">
-                        Admin
+                        Admin Login
                       </h3>
                     </div>
                     <ul className="space-y-1.5 text-sm text-slate-300">
-                      <li>• Can manage users</li>
-                      <li>• Can assign tasks</li>
-                      <li>• Can monitor all tasks</li>
+                      <li>• Email: testadmin@gmail.com</li>
+                      <li>• Password: TestAdmin@123</li>
                     </ul>
                   </div>
 
-                  {/* User role */}
+                  {/* User login */}
                   <div className="rounded-xl border border-blue-400/20 bg-blue-500/10 p-4">
                     <div className="mb-2 flex items-center gap-2">
                       <User
                         className="h-4 w-4 text-blue-300"
                         aria-hidden="true"
                       />
-                      <h3 className="text-lg font-bold text-white">User</h3>
+                      <h3 className="text-lg font-bold text-white">User Login</h3>
                     </div>
                     <ul className="space-y-1.5 text-sm text-slate-300">
-                      <li>• Can view assigned tasks</li>
-                      <li>• Can update task status</li>
-                      <li>• Can manage own profile</li>
+                      <li>• Email: testuser1@gmail.com</li>
+                      <li>• Password: Tuuu10</li>
                     </ul>
                   </div>
                 </div>
