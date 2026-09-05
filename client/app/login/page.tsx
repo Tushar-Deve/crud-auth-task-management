@@ -352,7 +352,7 @@ export default function LoginPage() {
                     </ul>
                   </div>
                 </div>
-              </section> know.
+              </section>
             </aside>
           </div>
         </div>
