@@ -172,13 +172,13 @@ export default function LoginPage() {
                     aria-hidden="true"
                   />
                 </div>
-                <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                  {isForgotPassword ? "Forgot Password?" : "Welcome"}
+                <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                  {isForgotPassword ? "Forgot Password?" : "Login"}
                 </h1>
-                <p className="mt-2 text-sm leading-relaxed text-slate-300 sm:text-base">
+                <p className="mt-2 text-base font-bold leading-relaxed text-slate-300 lg:text-lg">
                   {isForgotPassword
                     ? "Enter your email address and we'll send you a reset link."
-                    : "Loginto continue to the CRUD Auth Task Management Portal."}
+                    : "Sign in to manage your tasks"}
                 </p>
               </header>
 
@@ -188,7 +188,7 @@ export default function LoginPage() {
                 <div>
                   <label
                     htmlFor="email"
-                    className="mb-2 block text-sm font-medium text-slate-200"
+                    className="mb-2 block text-base font-medium text-slate-200"
                   >
                     Email address
                   </label>
@@ -205,7 +205,7 @@ export default function LoginPage() {
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
                       placeholder="Enter your Email"
-                      className="w-full rounded-xl border border-white/15 bg-white/5 py-3 pl-10 pr-4 text-sm text-white placeholder:text-slate-400 outline-none transition-all focus:border-indigo-400/60 focus:bg-white/10 focus:ring-2 focus:ring-indigo-500/30 sm:text-base"
+                      className="w-full rounded-xl border border-white/15 bg-white/5 py-3 pl-10 pr-4 text-base text-white placeholder:text-slate-400 outline-none transition-all focus:border-indigo-400/60 focus:bg-white/10 focus:ring-2 focus:ring-indigo-500/30"
                     />
                   </div>
                 </div>
@@ -214,7 +214,7 @@ export default function LoginPage() {
                   <div>
                     <label
                       htmlFor="password"
-                      className="mb-2 block text-sm font-medium text-slate-200"
+                      className="mb-2 block text-base font-medium text-slate-200"
                     >
                       Password
                     </label>
@@ -231,7 +231,7 @@ export default function LoginPage() {
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
                         placeholder="Enter your password"
-                        className="w-full rounded-xl border border-white/15 bg-white/5 py-3 pl-10 pr-12 text-sm text-white placeholder:text-slate-400 outline-none transition-all focus:border-indigo-400/60 focus:bg-white/10 focus:ring-2 focus:ring-indigo-500/30 sm:text-base"
+                        className="w-full rounded-xl border border-white/15 bg-white/5 py-3 pl-10 pr-12 text-base text-white placeholder:text-slate-400 outline-none transition-all focus:border-indigo-400/60 focus:bg-white/10 focus:ring-2 focus:ring-indigo-500/30"
                       />
                       <button
                         type="button"
@@ -256,7 +256,7 @@ export default function LoginPage() {
                   type="submit"
                   disabled={isDisabled}
                   aria-busy={isLoading}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-900/40 transition-all duration-300 hover:-translate-y-0.5 hover:from-indigo-500 hover:to-blue-500 hover:shadow-xl hover:shadow-indigo-700/50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 sm:text-base"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-indigo-900/40 transition-all duration-300 hover:-translate-y-0.5 hover:from-indigo-500 hover:to-blue-500 hover:shadow-xl hover:shadow-indigo-700/50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
                 >
                   {isLoading ? (
                     <>
@@ -272,7 +272,6 @@ export default function LoginPage() {
                 </button>
 
                 {/* Deployment Hide  */}
-                
                 {process.env.NODE_ENV === "development" && (
                   <>
                     {isForgotPassword ? (
@@ -306,7 +305,7 @@ export default function LoginPage() {
               </form>
             </div>
 
-            <aside className="hidden w-full lg:block">
+            <aside className="w-full">
               {/* Role information card */}
               <section
                 aria-labelledby="role-info-heading"

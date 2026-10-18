@@ -160,7 +160,7 @@ exports.getTask = async (req, res) => {
         });
 
     } catch (error) {
-        onsole.error("GET TASK ERROR:", error);;
+        console.error("GET TASK ERROR:", error);
         return res.status(500).json({
             success: false,
             message: "Server error"
@@ -204,8 +204,8 @@ exports.getTaskById = async (req, res) => {
                 ON t.assigned_to = u2.id
 
              WHERE t.id = $1
-             AND t.assigned_to = $2`,
-            [taskId, userId]
+             AND ($2 = 'admin' OR t.assigned_to = $3)`,
+            [taskId, req.user.role, userId]
         );
 
         if (result.rows.length === 0) {

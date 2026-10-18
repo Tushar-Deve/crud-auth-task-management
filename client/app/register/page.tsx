@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { registerUser } from "@/services/authService";
 import RegisterOtpModal from "@/components/RegisterOtpModal";
+import Footer from "@/components/reusable/footer";
 
 const BACKGROUND_IMAGE =
     "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80";
@@ -126,13 +127,13 @@ export default function RegisterPage() {
                 />
 
                 {/* Main */}
-                <main className="relative z-10 flex flex-1 items-center justify-center overflow-y-auto px-4 py-8 sm:px-6 lg:px-8">
+                <main className="relative z-10 flex min-h-0 flex-1 items-center justify-center overflow-y-auto px-4 py-12 sm:px-6 lg:px-8 lg:py-0">
                     <div className="animate-fade-in-up w-full max-w-5xl">
-                        <div className="grid gap-8 rounded-3xl border border-white/20 bg-white/10 p-8 shadow-2xl shadow-indigo-950/40 backdrop-blur-xl lg:grid-cols-[1.6fr_1fr] sm:p-10">
+                        <div className="grid gap-8 rounded-3xl border border-white/20 bg-white/10 p-8 shadow-2xl shadow-indigo-950/40 backdrop-blur-xl lg:grid-cols-[1.6fr_1fr] lg:p-8 sm:p-10">
 
                             {/* Register Form */}
                             <div>
-                                <header className="mb-8 text-center">
+                                <header className="mb-8 text-center lg:mb-6">
                                     <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 shadow-lg shadow-indigo-900/40">
                                         <LayoutDashboard
                                             className="h-7 w-7 text-white"
@@ -151,7 +152,7 @@ export default function RegisterPage() {
 
                                 <form
                                     onSubmit={handleSubmit}
-                                    className="mx-auto max-w-xl space-y-5"
+                                    className="mx-auto max-w-xl space-y-5 lg:space-y-4"
                                     noValidate
                                 >
                                     {/* Name */}
@@ -347,7 +348,7 @@ export default function RegisterPage() {
                             </div>
 
                             {/* Information */}
-                            <aside className="w-full">
+                            <aside className="hidden w-full lg:block">
                                 <section className="mt-8 w-full rounded-2xl border border-white/15 bg-white/5 p-7">
                                     <h2 className="mb-4 text-center text-lg font-bold uppercase tracking-wider text-indigo-200">
                                         User Account
@@ -390,13 +391,7 @@ export default function RegisterPage() {
                     </div>
                 </main>
 
-                {/* Footer */}
-                <footer className="relative z-10 bg-slate-950/80 px-4 py-4 text-center backdrop-blur-sm sm:px-6">
-                    <p className="text-xs font-large leading-relaxed tracking-wide text-slate-400 sm:text-lg">
-                        © 2026 CRUD Auth Task Management Portal.
-                        <br className="sm:hidden" /> All Rights Reserved.
-                    </p>
-                </footer>
+                <Footer />
                 {showOtpModal && (
                     <RegisterOtpModal
                         email={email.trim()}
