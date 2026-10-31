@@ -15,6 +15,82 @@ const safeUser = require("../utils/safeUser");   // sensitive data remove
 const sendOtpEmail = require("../utils/sendOTPEmail");
 const { saveOtp, getOtp, deleteOtp, } = require("../utils/otpStore");
 
+const ACCESS_TOKEN_TTL = process.env.JWT_EXPIRES_IN || "15m";
+const REFRESH_TOKEN_TTL_DAYS = Math.min(90, Math.max(1, Number(process.env.REFRESH_TOKEN_TTL_DAYS) || 30));
+const REFRESH_TOKEN_TTL_MS = REFRESH_TOKEN_TTL_DAYS * 24 * 60 * 60 * 1000;
+
+function hashRefreshToken(token) {
+    return crypto.createHash("sha256").update(token).digest("hex");
+}
+
+function createRefreshToken() {
+    const sessionId = crypto.randomUUID();
+    const secret = crypto.randomBytes(32).toString("base64url");
+    return { sessionId, token: `${sessionId}.${secret}` };
+}
+
+function getRefreshSessionId(token) {
+    if (typeof token !== "string") return null;
+    const [sessionId, secret, extra] = token.split(".");
+    if (extra !== undefined || !secret || !/^[0-9a-f-]{36}$/i.test(sessionId)) return null;
+    return sessionId;
+}
+
+function accessTokenMaxAge() {
+    const match = /^([1-9]\d*)(s|m|h|d)$/.exec(ACCESS_TOKEN_TTL);
+    if (!match) throw new Error("JWT_EXPIRES_IN must use seconds, minutes, hours, or days (for example 15m).");
+    const units = { s: 1000, m: 60_000, h: 3_600_000, d: 86_400_000 };
+    return Number(match[1]) * units[match[2]];
+}
+
+function authCookieOptions(path, maxAge) {
+    const secure = process.env.NODE_ENV === "production";
+    return {
+        httpOnly: true,
+        secure,
+        sameSite: secure ? "none" : "lax",
+        path,
+        ...(maxAge ? { maxAge } : {}),
+    };
+}
+
+function setAuthCookies(res, accessToken, refreshToken) {
+    res.cookie("accessToken", accessToken, authCookieOptions("/", accessTokenMaxAge()));
+    res.cookie("refreshToken", refreshToken, authCookieOptions("/authRoutes", REFRESH_TOKEN_TTL_MS));
+}
+
+function clearAuthCookies(res) {
+    res.clearCookie("accessToken", authCookieOptions("/"));
+    res.clearCookie("refreshToken", authCookieOptions("/authRoutes"));
+}
+
+function signAccessToken(user, sessionId) {
+    return jwt.sign(
+        { id: user.id, email: user.email, role: user.role, sid: sessionId },
+        process.env.JWT_SECRET,
+        { expiresIn: ACCESS_TOKEN_TTL }
+    );
+}
+
+function isMobileClient(req) {
+    return req.get("x-client-type") === "mobile";
+}
+
+function isAllowedWebOrigin(origin) {
+    if (!origin) return false;
+    const configuredOrigins = (process.env.CLIENT_ORIGINS || "")
+        .split(",")
+        .map((value) => value.trim())
+        .filter(Boolean);
+    const allowedOrigins = [
+        "http://localhost:3000",
+        "https://crud-auth-task-management.vercel.app",
+        process.env.FRONTEND_URL,
+        ...configuredOrigins,
+    ].filter(Boolean);
+    return allowedOrigins.includes(origin);
+}
+
 
 // --------------------
 // RegisterUser
@@ -308,55 +384,27 @@ exports.loginUser = async (req, res) => {
             [user.id]
         );
 
-        // 7. JWT Payload
-        const payLoad = {
-            id: user.id,
-            email: user.email,
-            role: user.role
-        };
-
-        // 8. Access Token
-        const accessToken = jwt.sign(
-            payLoad,
-            process.env.JWT_SECRET,
-            {
-                expiresIn: process.env.JWT_EXPIRES_IN
-            }
+        const { sessionId, token: refreshToken } = createRefreshToken();
+        const refreshExpiresAt = new Date(Date.now() + REFRESH_TOKEN_TTL_MS);
+        await db.query(
+            `INSERT INTO "UserSession"(id, "userId", "tokenHash", "expiresAt")
+             VALUES($1, $2, $3, $4)`,
+            [sessionId, user.id, hashRefreshToken(refreshToken), refreshExpiresAt]
         );
 
-        // 9. Convert JWT expiry to milliseconds for cookie
-        const expiresIn = process.env.JWT_EXPIRES_IN;
+        const accessToken = signAccessToken(user, sessionId);
+        setAuthCookies(res, accessToken, refreshToken);
+        const safe = safeUser(user);
 
-        let cookieMaxAge;
-
-        if (expiresIn.endsWith("s")) {
-            cookieMaxAge = parseInt(expiresIn) * 1000;
-        } else if (expiresIn.endsWith("m")) {
-            cookieMaxAge = parseInt(expiresIn) * 60 * 1000;
-        } else if (expiresIn.endsWith("h")) {
-            cookieMaxAge = parseInt(expiresIn) * 60 * 60 * 1000;
-        } else {
-            throw new Error("Invalid JWT_EXPIRES_IN format");
-        }
-
-        // 10. Store Access Token in HTTP-only cookie
-        res.cookie("accessToken", accessToken, {
-            httpOnly: true,
-            secure: false, // production me true (HTTPS)
-            sameSite: "Strict",
-            maxAge: cookieMaxAge
-        });
-
-        // 11. Safe user data
-        const safe = safeUser(user);;
-
-        // 12. Response
-        return res.status(200).json({
+        const response = {
             success: true,
             message: "Login successful",
             accessToken,
             user: safe
-        });
+        };
+        if (isMobileClient(req)) response.refreshToken = refreshToken;
+
+        return res.status(200).json(response);
 
     } catch (error) {
         console.error(error);
@@ -413,132 +461,108 @@ exports.getProfile = async (req, res) => {
 
 
 // --------------------
-// Refresh Token API 
-// ....................
+// Refresh Token API
+// --------------------
 
-// exports.refreshToken = async (req, res) => {
-//     try {
+exports.refreshToken = async (req, res) => {
+    const mobileClient = isMobileClient(req);
+    const refreshToken = mobileClient ? req.body?.refreshToken : req.cookies?.refreshToken;
+    const sessionId = getRefreshSessionId(refreshToken);
 
-//         console.log("========== REFRESH TOKEN API ==========");
+    if (!mobileClient && refreshToken && !isAllowedWebOrigin(req.get("origin"))) {
+        return res.status(403).json({ success: false, message: "Refresh request origin is not allowed" });
+    }
+    if (!sessionId) {
+        clearAuthCookies(res);
+        return res.status(401).json({ success: false, message: "Refresh token is missing or invalid" });
+    }
 
-//         const token = req.cookies.refreshToken;
+    const client = await db.connect();
+    let transactionOpen = false;
+    try {
+        await client.query("BEGIN");
+        transactionOpen = true;
 
-//          console.log("Refresh Token:", token)
+        const result = await client.query(
+            `SELECT s."tokenHash", s."expiresAt", s."revokedAt",
+                    u.id, u.email, u.role
+             FROM "UserSession" s
+             INNER JOIN "User" u ON u.id = s."userId"
+             WHERE s.id = $1
+             FOR UPDATE OF s`,
+            [sessionId]
+        );
+        const session = result.rows[0];
 
-//         // ❌ no refresh token
-//         if (!token) {
-//             return res.status(401).json({
-//                 success: false,
-//                 message: "No refresh token"
-//             });
-//         }
+        if (!session || session.revokedAt || new Date(session.expiresAt).getTime() <= Date.now()) {
+            await client.query("ROLLBACK");
+            transactionOpen = false;
+            clearAuthCookies(res);
+            return res.status(401).json({ success: false, message: "Refresh token expired or revoked" });
+        }
 
-//         // 🔐 verify refresh token
-//         const decoded = jwt.verify(
-//             token,
-//             process.env.JWT_REFRESH_SECRET
-//         );
+        if (session.tokenHash.trim() !== hashRefreshToken(refreshToken)) {
+            // A previously rotated token was replayed. Revoke this session.
+            await client.query(
+                `UPDATE "UserSession" SET "revokedAt" = NOW() WHERE id = $1`,
+                [sessionId]
+            );
+            await client.query("COMMIT");
+            transactionOpen = false;
+            clearAuthCookies(res);
+            return res.status(401).json({ success: false, message: "Refresh token was already used" });
+        }
 
-//           console.log("Decoded Refresh Token:", decoded);
+        const { token: nextRefreshToken } = createRefreshToken();
+        const nextRefreshExpiry = new Date(Date.now() + REFRESH_TOKEN_TTL_MS);
+        const accessToken = signAccessToken(session, sessionId);
 
-//         // 🔎 DB se user fetch
-//         const result = await db.query(
-//             'SELECT * FROM "User" WHERE id = $1',
-//             [decoded.id]
-//         );
+        await client.query(
+            `UPDATE "UserSession"
+             SET "tokenHash" = $1, "expiresAt" = $2, "lastUsedAt" = NOW()
+             WHERE id = $3`,
+            [hashRefreshToken(nextRefreshToken), nextRefreshExpiry, sessionId]
+        );
+        await client.query("COMMIT");
+        transactionOpen = false;
 
-//         const user = result.rows[0];
-
-//            console.log("Refresh User:", user)
-
-//         // ❌ mismatch / invalid
-//         if (!user || user.refresh_token !== token) {
-//             return res.status(403).json({
-//                 success: false,
-//                 message: "Invalid refresh token"
-//             });
-//         }
-
-//         // 🆕 new access token generate
-//         const newAccessToken = jwt.sign(
-//             { id: user.id },
-//             process.env.JWT_SECRET,
-//             { expiresIn: "15m" }
-//         );
-
-//          console.log("✅ New Access Token Generated");
-
-//         // 🍪 cookie update
-//         res.cookie("accessToken", newAccessToken, {
-//             httpOnly: true,
-//             secure: false,
-//             sameSite: "Strict",
-//             maxAge: 15 * 60 * 1000
-//         });
-
-//         return res.status(200).json({
-//             success: true,
-//             message: "New access token generated",
-//              accessToken: newAccessToken
-//         });
-
-//     } catch (error) {
-
-//         console.error("❌ REFRESH ERROR:", error);
-
-//         return res.status(403).json({
-//             success: false,
-//             message: "Refresh token expired or invalid"
-//         });
-//     }
-// };
+        setAuthCookies(res, accessToken, nextRefreshToken);
+        const response = { success: true, accessToken };
+        if (mobileClient) response.refreshToken = nextRefreshToken;
+        return res.status(200).json(response);
+    } catch (error) {
+        if (transactionOpen) await client.query("ROLLBACK").catch(() => {});
+        console.error("REFRESH TOKEN ERROR:", error.message);
+        clearAuthCookies(res);
+        return res.status(500).json({ success: false, message: "Could not refresh the session" });
+    } finally {
+        client.release();
+    }
+};
 
 // --------------------
-// Logout API   
+// Logout API
 // --------------------
 
 exports.logout = async (req, res) => {
     try {
+        const refreshToken = isMobileClient(req) ? req.body?.refreshToken : req.cookies?.refreshToken;
+        const sessionId = getRefreshSessionId(refreshToken);
+        if (sessionId) {
+            await db.query(
+                `UPDATE "UserSession"
+                 SET "revokedAt" = COALESCE("revokedAt", NOW())
+                 WHERE id = $1`,
+                [sessionId]
+            );
+        }
 
-        // Current user id
-        const userId = req.user.id;
-
-        // Remove refresh token from database
-        await db.query(
-            `UPDATE "User"
-             SET refresh_token = NULL
-             WHERE id = $1`,
-            [userId]
-        );
-
-        // Clear access token cookie
-        res.clearCookie("accessToken", {
-            httpOnly: true,
-            secure: false,
-            sameSite: "Strict",
-        });
-
-        // Clear refresh token cookie
-        res.clearCookie("refreshToken", {
-            httpOnly: true,
-            secure: false,
-            sameSite: "Strict",
-        });
-
-        return res.status(200).json({
-            success: true,
-            message: "Logout successful",
-        });
-
+        clearAuthCookies(res);
+        return res.status(200).json({ success: true, message: "Logout successful" });
     } catch (error) {
-
-        console.error("Logout Error:", error);
-
-        return res.status(500).json({
-            success: false,
-            message: "Logout failed",
-        });
-
+        console.error("LOGOUT ERROR:", error.message);
+        clearAuthCookies(res);
+        return res.status(500).json({ success: false, message: "Logout failed" });
     }
 };
 
@@ -572,6 +596,12 @@ exports.changePassword = async (req, res) => {
         await db.query(
             'UPDATE "User" SET password = $1 WHERE id = $2',
             [hashedPassword, userId]
+        );
+
+        await db.query(
+            `UPDATE "UserSession" SET "revokedAt" = COALESCE("revokedAt", NOW())
+             WHERE "userId" = $1`,
+            [userId]
         );
 
         return res.json({
@@ -712,6 +742,12 @@ exports.resetPassword = async (req, res) => {
                  reset_token_expiry = NULL
              WHERE id = $2`,
             [hashedPassword, user.id]
+        );
+
+        await db.query(
+            `UPDATE "UserSession" SET "revokedAt" = COALESCE("revokedAt", NOW())
+             WHERE "userId" = $1`,
+            [user.id]
         );
 
         return res.status(200).json({

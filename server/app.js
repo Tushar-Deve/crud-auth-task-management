@@ -18,13 +18,20 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 
-//Cors Middleware
+const clientOrigins = (process.env.CLIENT_ORIGINS || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+// CORS Middleware
 app.use(
   cors({
      origin: [
       "http://localhost:3000",
       "https://crud-auth-task-management.vercel.app",
-    ],
+      process.env.FRONTEND_URL,
+      ...clientOrigins,
+    ].filter(Boolean),
     credentials: true,
   })
 );

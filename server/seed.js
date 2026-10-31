@@ -20,6 +20,23 @@ async function seed() {
 `);
 
     await db.query(`
+      CREATE TABLE IF NOT EXISTS "UserSession" (
+        id UUID PRIMARY KEY,
+        "userId" INTEGER NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
+        "tokenHash" CHAR(64) NOT NULL,
+        "expiresAt" TIMESTAMPTZ NOT NULL,
+        "createdAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        "lastUsedAt" TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        "revokedAt" TIMESTAMPTZ NULL
+      )
+    `);
+
+    await db.query(`
+      CREATE INDEX IF NOT EXISTS "UserSession_userId_idx"
+      ON "UserSession"("userId")
+    `);
+
+    await db.query(`
         CREATE TABLE IF NOT EXISTS "Task"(
         id SERIAL PRIMARY KEY,
         title VARCHAR(100),
