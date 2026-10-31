@@ -35,28 +35,50 @@ async function seed() {
         );
       `);
 
-    // CREATE TABLE IF NOT EXISTS does not update constraints on an existing table.
-    // Replace only the Task table's status check so deployed databases accept
-    // the same three statuses as the server and mobile/web clients.
-    await db.query(`
-      DO $$
-      DECLARE constraint_row RECORD;
-      BEGIN
-        FOR constraint_row IN
-          SELECT conname
-          FROM pg_constraint
-          WHERE conrelid = '"Task"'::regclass
-            AND contype = 'c'
-            AND pg_get_constraintdef(oid) ILIKE '%status%'
-        LOOP
-          EXECUTE format('ALTER TABLE "Task" DROP CONSTRAINT %I', constraint_row.conname);
-        END LOOP;
-
-        ALTER TABLE "Task"
-        ADD CONSTRAINT task_status_allowed
-        CHECK (status IN ('pending', 'in-progress', 'completed'));
-      END $$;
+    // Existing databases may store Task.status as either a CHECK-constrained
+    // string or the TaskStatus enum. Update the constraint/type accordingly.
+    const taskStatusColumn = await db.query(`
+      SELECT status_type.typname, status_type.typtype
+      FROM pg_attribute AS status_column
+      JOIN pg_type AS status_type ON status_type.oid = status_column.atttypid
+      WHERE status_column.attrelid = '"Task"'::regclass
+        AND status_column.attname = 'status'
+        AND NOT status_column.attisdropped
     `);
+
+    const statusType = taskStatusColumn.rows[0];
+    if (!statusType) {
+      throw new Error('Could not determine the Task.status database type.');
+    }
+
+    if (statusType.typtype === 'e') {
+      if (statusType.typname !== 'TaskStatus') {
+        throw new Error(`Unsupported Task.status enum: ${statusType.typname}`);
+      }
+      await db.query(`ALTER TYPE "TaskStatus" ADD VALUE IF NOT EXISTS 'in-progress'`);
+    } else {
+      // CREATE TABLE IF NOT EXISTS does not update a constraint on an
+      // existing string column, so replace its status check idempotently.
+      await db.query(`
+        DO $$
+        DECLARE constraint_row RECORD;
+        BEGIN
+          FOR constraint_row IN
+            SELECT conname
+            FROM pg_constraint
+            WHERE conrelid = '"Task"'::regclass
+              AND contype = 'c'
+              AND pg_get_constraintdef(oid) ILIKE '%status%'
+          LOOP
+            EXECUTE format('ALTER TABLE "Task" DROP CONSTRAINT %I', constraint_row.conname);
+          END LOOP;
+
+          ALTER TABLE "Task"
+          ADD CONSTRAINT task_status_allowed
+          CHECK (status IN ('pending', 'in-progress', 'completed'));
+        END $$;
+      `);
+    }
 
     await db.query(`
       CREATE TABLE IF NOT EXISTS "TaskHistory"(
