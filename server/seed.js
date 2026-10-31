@@ -28,12 +28,35 @@ async function seed() {
           priority IN ('low', 'medium', 'high')
         ),
         due_date DATE,
-        status VARCHAR(30) CHECK (status IN ('pending', 'completed')),
+        status VARCHAR(30) CHECK (status IN ('pending', 'in-progress', 'completed')),
         assigned_to INT REFERENCES "User"(id) ON DELETE SET NULL,
         assigned_by INT REFERENCES "User"(id) ON DELETE SET NULL,
         "created_at" TIMESTAMP DEFAULT NOW()
         );
       `);
+
+    // CREATE TABLE IF NOT EXISTS does not update constraints on an existing table.
+    // Replace only the Task table's status check so deployed databases accept
+    // the same three statuses as the server and mobile/web clients.
+    await db.query(`
+      DO $$
+      DECLARE constraint_row RECORD;
+      BEGIN
+        FOR constraint_row IN
+          SELECT conname
+          FROM pg_constraint
+          WHERE conrelid = '"Task"'::regclass
+            AND contype = 'c'
+            AND pg_get_constraintdef(oid) ILIKE '%status%'
+        LOOP
+          EXECUTE format('ALTER TABLE "Task" DROP CONSTRAINT %I', constraint_row.conname);
+        END LOOP;
+
+        ALTER TABLE "Task"
+        ADD CONSTRAINT task_status_allowed
+        CHECK (status IN ('pending', 'in-progress', 'completed'));
+      END $$;
+    `);
 
     await db.query(`
       CREATE TABLE IF NOT EXISTS "TaskHistory"(
