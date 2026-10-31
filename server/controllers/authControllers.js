@@ -23,8 +23,7 @@ function hashRefreshToken(token) {
     return crypto.createHash("sha256").update(token).digest("hex");
 }
 
-function createRefreshToken() {
-    const sessionId = crypto.randomUUID();
+function createRefreshToken(sessionId = crypto.randomUUID()) {
     const secret = crypto.randomBytes(32).toString("base64url");
     return { sessionId, token: `${sessionId}.${secret}` };
 }
@@ -513,7 +512,7 @@ exports.refreshToken = async (req, res) => {
             return res.status(401).json({ success: false, message: "Refresh token was already used" });
         }
 
-        const { token: nextRefreshToken } = createRefreshToken();
+        const { token: nextRefreshToken } = createRefreshToken(sessionId);
         const nextRefreshExpiry = new Date(Date.now() + REFRESH_TOKEN_TTL_MS);
         const accessToken = signAccessToken(session, sessionId);
 
