@@ -388,7 +388,8 @@ exports.updateTask = async (req, res) => {
 // ---------------
 
 exports.deleteTask = async (req, res) => {
-
+    let client;
+    let transactionOpen = false;
     try {
         const taskId = req.params.id;
         const role = req.user.role;
@@ -400,21 +401,34 @@ exports.deleteTask = async (req, res) => {
             })
         }
 
-        // ✅ delete query
-        const result = await db.query(
+        // TaskHistory references Task without ON DELETE CASCADE. Remove its
+        // notification/history rows in the same transaction before the task.
+        client = await db.connect();
+        await client.query("BEGIN");
+        transactionOpen = true;
+        await client.query(
+            `DELETE FROM "TaskHistory" WHERE "taskId" = $1`,
+            [taskId]
+        );
+
+        const result = await client.query(
             `DELETE FROM "Task"
              WHERE id = $1
              RETURNING *`,
             [taskId]
         );
 
-        // ❗ task exist nahi
         if (result.rows.length === 0) {
+            await client.query("ROLLBACK");
+            transactionOpen = false;
             return res.status(404).json({
                 success: false,
                 message: "Task not found"
             });
         }
+
+        await client.query("COMMIT");
+        transactionOpen = false;
 
         return res.status(200).json({
             success: true,
@@ -424,12 +438,21 @@ exports.deleteTask = async (req, res) => {
     }
 
     catch (error) {
+        if (transactionOpen && client) {
+            try {
+                await client.query("ROLLBACK");
+            } catch (rollbackError) {
+                console.error("DELETE TASK ROLLBACK ERROR:", rollbackError);
+            }
+        }
 
         console.error("DELETE TASK ERROR:", error);
         return res.status(500).json({
             success: false,
             message: "Server error"
         })
+    } finally {
+        if (client) client.release();
     }
 }
 
