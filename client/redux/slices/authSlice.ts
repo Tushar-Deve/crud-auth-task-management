@@ -29,6 +29,10 @@ const authSlice = createSlice({
             state.loading = false;
         },
 
+        updateAccessToken: (state, action) => {
+            state.token = action.payload;
+        },
+
 
         logout: (state) => {
             state.user = null;
@@ -47,6 +51,7 @@ const authSlice = createSlice({
 
 export const {
     loginSuccess,
+    updateAccessToken,
     logout,
     setLoading
 } = authSlice.actions;
