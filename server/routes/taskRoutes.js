@@ -1,7 +1,7 @@
 const express=require("express");
 const router=express.Router();
 
-const { createTask, getTask, getTaskById, updateTask, deleteTask, getTaskHistory, getUnreadTaskHistoryCount, markTaskHistoryAsRead, uploadFile}=require("../controllers/taskController");
+const { createTask, getTask, getTaskById, updateTask, deleteTask, getTaskHistory, getUnreadTaskHistoryCount, markTaskHistoryAsRead, getUnreadAssignmentNotifications, markAssignmentNotificationsRead, uploadFile}=require("../controllers/taskController");
 const authMiddleware=require("../middleware/authMiddleware");
 const upload = require("../middleware/upload");
 
@@ -16,6 +16,10 @@ router.get("/gettaskhistory", authMiddleware, getTaskHistory);
 router.get("/taskhistory/unread-count",authMiddleware,getUnreadTaskHistoryCount);
 
 router.patch("/taskhistory/mark-read",authMiddleware,markTaskHistoryAsRead);
+
+router.get("/taskhistory/assignments/unread",authMiddleware,getUnreadAssignmentNotifications);
+
+router.patch("/taskhistory/assignments/mark-read",authMiddleware,markAssignmentNotificationsRead);
 
 router.patch("/updatetask/:id",authMiddleware, upload.single("file"),updateTask);
 

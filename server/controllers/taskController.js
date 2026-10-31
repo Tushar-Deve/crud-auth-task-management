@@ -5,7 +5,8 @@ const db = require("../config/db");
 // ------------
 
 exports.createTask = async (req, res) => {
-
+    let client;
+    let transactionOpen = false;
     try {
         const { title, description, priority, due_date, assignedTo, } = req.body || {};
 
@@ -47,7 +48,10 @@ exports.createTask = async (req, res) => {
             });
         }
 
-        const taskResult = await db.query(
+        client = await db.connect();
+        await client.query("BEGIN");
+        transactionOpen = true;
+        const taskResult = await client.query(
             `INSERT INTO "Task"(
             title, description, priority, due_date, status, assigned_to, assigned_by
             )
@@ -57,6 +61,15 @@ exports.createTask = async (req, res) => {
         );
 
         const task = taskResult.rows[0];
+
+        await client.query(
+            `INSERT INTO "TaskHistory"("taskId", "updatedBy", status, "isRead")
+             VALUES($1, $2, 'pending', false)`,
+            [task.id, userId]
+        );
+
+        await client.query("COMMIT");
+        transactionOpen = false;
         
         // File attachment
         if (req.file) {
@@ -83,12 +96,18 @@ exports.createTask = async (req, res) => {
     }
     catch (error) {
 
+        if (client && transactionOpen) {
+            await client.query("ROLLBACK").catch(() => {});
+        }
+
         console.error("CREATE TASK ERROR:", error)
         return res.status(500).json({
             success: false,
             message: "Server error"
         })
 
+    } finally {
+        client?.release();
     }
 }
 
@@ -319,6 +338,12 @@ exports.updateTask = async (req, res) => {
 
         if (status === "completed") {
 
+            await db.query(
+                `UPDATE "TaskHistory"
+                 SET "isRead" = true
+                 WHERE "taskId" = $1 AND status = 'pending' AND "isRead" = false`,
+                [taskId]
+            );
 
             await db.query(
                 `INSERT INTO "TaskHistory"("taskId", "updatedBy", "status")
@@ -411,6 +436,66 @@ exports.deleteTask = async (req, res) => {
 // ----------------------
 // Get All Task History API
 // ----------------------
+
+exports.getUnreadAssignmentNotifications = async (req, res) => {
+    try {
+        if (req.user.role !== "user") {
+            return res.status(403).json({ success: false, message: "Only users can view assignment notifications" });
+        }
+
+        const result = await db.query(`
+            SELECT
+                th.id,
+                t.id AS "taskId",
+                t.title,
+                t.description,
+                t.priority,
+                t.due_date,
+                th."updatedAt" AS "createdAt",
+                u.name AS assigned_by_name
+            FROM "TaskHistory" th
+            INNER JOIN "Task" t ON th."taskId" = t.id
+            LEFT JOIN "User" u ON t.assigned_by = u.id
+            WHERE t.assigned_to = $1
+              AND th.status = 'pending'
+              AND th."isRead" = false
+            ORDER BY th."updatedAt" DESC
+        `, [req.user.id]);
+
+        return res.status(200).json({
+            success: true,
+            count: result.rows.length,
+            notifications: result.rows,
+        });
+    } catch (error) {
+        console.error("GET ASSIGNMENT NOTIFICATIONS ERROR:", error);
+        return res.status(500).json({ success: false, message: "Could not load assignment notifications" });
+    }
+};
+
+exports.markAssignmentNotificationsRead = async (req, res) => {
+    try {
+        if (req.user.role !== "user") {
+            return res.status(403).json({ success: false, message: "Only users can mark assignment notifications as read" });
+        }
+
+        const result = await db.query(`
+            UPDATE "TaskHistory" th
+            SET "isRead" = true
+            FROM "Task" t
+            WHERE th."taskId" = t.id
+              AND t.assigned_to = $1
+              AND th.status = 'pending'
+              AND th."isRead" = false
+            RETURNING th.id
+        `, [req.user.id]);
+
+        return res.status(200).json({ success: true, count: result.rows.length });
+    } catch (error) {
+        console.error("MARK ASSIGNMENT NOTIFICATIONS READ ERROR:", error);
+        return res.status(500).json({ success: false, message: "Could not update assignment notifications" });
+    }
+};
 
 exports.getTaskHistory = async (req, res) => {
     try {

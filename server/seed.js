@@ -41,8 +41,27 @@ async function seed() {
       taskId INT REFERENCES "Task"(id),
       updatedBy INT REFERENCES "User"(id),
       status VARCHAR(30) CHECK (status IN ('pending', 'completed')),
-      updatedAt TIMESTAMP DEFAULT NOW()
+      updatedAt TIMESTAMP DEFAULT NOW(),
+      "isRead" BOOLEAN NOT NULL DEFAULT FALSE
       )
+    `);
+
+    await db.query(`
+      ALTER TABLE "TaskHistory"
+      ADD COLUMN IF NOT EXISTS "isRead" BOOLEAN NOT NULL DEFAULT FALSE
+    `);
+
+    await db.query(`
+      INSERT INTO "TaskHistory"("taskId", "updatedBy", status, "isRead")
+      SELECT t.id, t.assigned_by, 'pending', FALSE
+      FROM "Task" t
+      WHERE t.assigned_to IS NOT NULL
+        AND COALESCE(t.status, 'pending') <> 'completed'
+        AND NOT EXISTS (
+          SELECT 1
+          FROM "TaskHistory" th
+          WHERE th."taskId" = t.id AND th.status = 'pending'
+        )
     `);
 
     await db.query(`
