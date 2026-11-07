@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import type { RootState } from "@/redux/store";
 import {
   Bell,
   CheckSquare,
@@ -11,6 +13,10 @@ import {
 import Navbar from "@/components/dashboard/Navbar";
 import Sidebar from "@/components/dashboard/Sidebar";
 import { useTheme } from "@/components/ThemeProvider";
+import {
+  setTaskNotificationsEnabled,
+  useTaskNotificationPreference,
+} from "@/services/taskNotificationPreference";
 
 type ThemePreference = "light" | "dark" | "system";
 
@@ -24,10 +30,11 @@ const themeOptions: {
 ];
 
 export default function UserSettingsPage() {
+  const user = useSelector((state: RootState) => state.auth.user);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
-  const [taskAssignments, setTaskAssignments] = useState(true);
+  const taskAssignments = useTaskNotificationPreference("user", user?.id);
   const [statusUpdates, setStatusUpdates] = useState(true);
   const [deadlineReminders, setDeadlineReminders] = useState(true);
   const [emailNotifications, setEmailNotifications] = useState(false);
@@ -86,11 +93,10 @@ export default function UserSettingsPage() {
                   label="Task assignments"
                   description="When a task is assigned to you"
                   enabled={taskAssignments}
-                  onToggle={() =>
-                    setTaskAssignments(
-                      (value) => !value
-                    )
-                  }
+                  onToggle={() => {
+                    const nextValue = !taskAssignments;
+                    setTaskNotificationsEnabled("user", user?.id, nextValue);
+                  }}
                 />
 
                 <SwitchRow

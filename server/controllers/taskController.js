@@ -541,7 +541,8 @@ exports.getTaskHistory = async (req, res) => {
                 u.email AS "userEmail",
                 t.title AS task,
                 th.status,
-                th."updatedAt"
+                th."updatedAt",
+                th."isRead"
             FROM "TaskHistory" th
 
             LEFT JOIN "User" u

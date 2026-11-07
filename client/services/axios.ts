@@ -19,6 +19,13 @@ const api = axios.create({
   withCredentials: true,
 });
 
+// Refresh uses the HTTP-only cookie and should not inherit the expired
+// access-token header or enter the protected-request retry interceptor.
+const refreshApi = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  withCredentials: true,
+});
+
 
 
 // --------------------------------------------------
@@ -64,7 +71,7 @@ api.interceptors.response.use(
     if (shouldRefresh) {
       originalRequest._refreshRetried = true;
       if (!refreshRequest) {
-        refreshRequest = api.post("/authRoutes/refresh", {}, { withCredentials: true })
+        refreshRequest = refreshApi.post("/authRoutes/refresh")
           .then((response) => {
             const token = response.data?.accessToken;
             if (typeof token !== "string" || !token) return null;
@@ -82,7 +89,9 @@ api.interceptors.response.use(
       }
     }
 
-    if (error.response?.status === 401 && !url.includes("/authRoutes/login")) {
+    const isAuthEntryRequest = ["/authRoutes/login", "/authRoutes/refresh", "/authRoutes/logout"]
+      .some((path) => url.includes(path));
+    if (error.response?.status === 401 && !isAuthEntryRequest) {
       store.dispatch(logout());
       if (typeof window !== "undefined") window.dispatchEvent(new Event("session-expired"));
     }

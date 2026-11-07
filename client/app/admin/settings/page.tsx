@@ -9,9 +9,14 @@ import {
   User,
 } from "lucide-react";
 import { useSelector } from "react-redux";
+import type { RootState } from "@/redux/store";
 import Navbar from "@/components/dashboard/Navbar";
 import Sidebar from "@/components/dashboard/Sidebar";
 import { useTheme } from "@/components/ThemeProvider";
+import {
+  setTaskNotificationsEnabled,
+  useTaskNotificationPreference,
+} from "@/services/taskNotificationPreference";
 
 type ThemePreference = "light" | "dark" | "system";
 
@@ -28,19 +33,9 @@ export default function SettingsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
-  const user = useSelector(
-    (state: {
-      auth: {
-        user?: {
-          name?: string;
-          email?: string;
-          role?: string;
-        };
-      };
-    }) => state.auth.user
-  );
+  const user = useSelector((state: RootState) => state.auth.user);
 
-  const [taskNotifications, setTaskNotifications] = useState(true);
+  const taskNotifications = useTaskNotificationPreference("admin", user?.id);
   const [emailNotifications, setEmailNotifications] = useState(true);
 
   const { theme, setTheme } = useTheme();
@@ -244,11 +239,10 @@ export default function SettingsPage() {
 
                     <button
                       type="button"
-                      onClick={() =>
-                        setTaskNotifications(
-                          (current) => !current
-                        )
-                      }
+                      onClick={() => {
+                        const nextValue = !taskNotifications;
+                        setTaskNotificationsEnabled("admin", user?.id, nextValue);
+                      }}
                       className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${
                         taskNotifications
                           ? "bg-indigo-600"

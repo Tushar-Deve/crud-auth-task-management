@@ -1,5 +1,25 @@
 import api from "./axios";
 
+export interface TaskAssignmentNotification {
+  id: number | string;
+  taskId: number | string;
+  title: string;
+  description?: string | null;
+  priority?: string | null;
+  due_date?: string | null;
+  createdAt: string;
+  assigned_by_name?: string | null;
+}
+
+export interface TaskHistoryNotification {
+  id: number | string;
+  taskId: number | string;
+  userName?: string | null;
+  task?: string | null;
+  updatedAt: string;
+  isRead?: boolean;
+}
+
 export interface CreateTaskData {
   title: string;
   description: string;
@@ -152,4 +172,27 @@ export const markTaskHistoryAsRead = async () => {
   );
 
   return response.data;
+};
+
+// ----------------------
+// User assignment notifications
+// ----------------------
+
+export const getUnreadAssignmentNotifications = async () => {
+  const response = await api.get(
+    "/taskRoutes/taskhistory/assignments/unread"
+  );
+
+  return response.data as {
+    count: number;
+    notifications: TaskAssignmentNotification[];
+  };
+};
+
+export const markAssignmentNotificationsAsRead = async () => {
+  const response = await api.patch(
+    "/taskRoutes/taskhistory/assignments/mark-read"
+  );
+
+  return response.data as { count: number };
 };

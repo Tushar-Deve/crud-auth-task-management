@@ -2,8 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { getMyTasks } from "@/services/user/userTaskService";
-import { getUnreadTaskHistoryCount } from "@/services/taskService";
+import {
+  getUnreadAssignmentNotifications,
+  getUnreadTaskHistoryCount,
+  markAssignmentNotificationsAsRead,
+} from "@/services/taskService";
+import {
+  useTaskNotificationPreference,
+} from "@/services/taskNotificationPreference";
 import { CheckSquare, LayoutDashboard, LogOut, Settings, User, Users, X, } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,6 +19,7 @@ import axios from "axios";
 import { logout } from "@/redux/slices/authSlice";
 import { logoutUser } from "@/services/authService";
 import { persistor } from "@/redux/store";
+import type { RootState } from "@/redux/store";
 
 export interface SidebarProps {
   isOpen: boolean;
@@ -95,121 +102,117 @@ export default function Sidebar({
 
   const dispatch = useDispatch();
   const router = useRouter();
-  const token = useSelector((state: any) => state.auth.token);
+  const token = useSelector((state: RootState) => state.auth.token);
+  const user = useSelector((state: RootState) => state.auth.user);
 
   const pathname = usePathname();
   const [newTaskCount, setNewTaskCount] = useState(0);
   const [adminNotificationCount, setAdminNotificationCount] = useState(0);
+  const notificationsEnabled = useTaskNotificationPreference(role, user?.id);
 
   useEffect(() => {
-    if (role !== "user" || !token) return;
+    if (role !== "user") return;
+    if (!token || !notificationsEnabled) {
+      setNewTaskCount(0);
+      return;
+    }
+
+    const viewingTasks = pathname.startsWith("/user/tasks");
+    let active = true;
+    let requestInProgress = false;
 
     const loadTaskNotifications = async () => {
+      if (requestInProgress) return;
+      requestInProgress = true;
       try {
-        const response = await getMyTasks();
-
-        const taskData =
-          response?.tasks ||
-          response?.data ||
-          response;
-
-        if (!Array.isArray(taskData)) {
-          setNewTaskCount(0);
+        if (viewingTasks) {
+          await markAssignmentNotificationsAsRead();
+          if (active) setNewTaskCount(0);
           return;
         }
 
-        const currentTaskIds = taskData.map(
-          (task: any) => String(task.id)
-        );
-
-        const storedSeenTasks = JSON.parse(
-          localStorage.getItem("seenTaskIds") || "[]"
-        ) as string[];
-
-        if (pathname === "/user/tasks") {
-          localStorage.setItem(
-            "seenTaskIds",
-            JSON.stringify(currentTaskIds)
-          );
-
-          setNewTaskCount(0);
-          return;
-        }
-
-        
-        const newTasks = currentTaskIds.filter(
-          (id) => !storedSeenTasks.includes(id)
-        );
-
-        setNewTaskCount(newTasks.length);
+        const response = await getUnreadAssignmentNotifications();
+        if (active) setNewTaskCount(Number(response?.count || 0));
       } catch (error) {
         console.error(
           "Failed to load task notifications:",
           error
         );
+      } finally {
+        requestInProgress = false;
       }
     };
 
-    loadTaskNotifications();
-  }, [role, token, pathname]);
-
-  useEffect(() => {
-    if (role !== "user" || !token) return;
-
-    const checkNewTasks = () => {
-      const storedCount = Number(
-        localStorage.getItem("userTaskNotificationCount") || "0"
-      );
-
-      setNewTaskCount(storedCount);
+    void loadTaskNotifications();
+    const refreshIfVisible = () => {
+      if (!viewingTasks && document.visibilityState === "visible") {
+        void loadTaskNotifications();
+      }
     };
-
-    checkNewTasks();
-
-    window.addEventListener("task-notification-updated", checkNewTasks);
+    const refreshOnNotificationUpdate = () => void loadTaskNotifications();
+    const refreshTimer = viewingTasks
+      ? undefined
+      : window.setInterval(refreshIfVisible, 10000);
+    window.addEventListener("focus", refreshIfVisible);
+    window.addEventListener("task-notification-updated", refreshOnNotificationUpdate);
 
     return () => {
-      window.removeEventListener(
-        "task-notification-updated",
-        checkNewTasks
-      );
+      active = false;
+      if (refreshTimer !== undefined) window.clearInterval(refreshTimer);
+      window.removeEventListener("focus", refreshIfVisible);
+      window.removeEventListener("task-notification-updated", refreshOnNotificationUpdate);
     };
-  }, [role, token]);
+  }, [role, token, pathname, user?.id, notificationsEnabled]);
 
  useEffect(() => {
-  if (role !== "admin" || !token) return;
+  if (role !== "admin") return;
+  if (!token || !notificationsEnabled) {
+    setAdminNotificationCount(0);
+    return;
+  }
+
+  let active = true;
+  let requestInProgress = false;
 
   const loadAdminNotifications = async () => {
+    if (requestInProgress) return;
+    requestInProgress = true;
     try {
       const response = await getUnreadTaskHistoryCount();
 
-      setAdminNotificationCount(
-        Number(response?.count || 0)
-      );
+      if (active) setAdminNotificationCount(Number(response?.count || 0));
     } catch (error) {
       console.error(
         "Failed to load admin task notifications:",
         error
       );
-
-      setAdminNotificationCount(0);
+    } finally {
+      requestInProgress = false;
     }
   };
 
-  loadAdminNotifications();
+  void loadAdminNotifications();
+  const refreshIfVisible = () => {
+    if (document.visibilityState === "visible") void loadAdminNotifications();
+  };
 
   window.addEventListener(
     "admin-task-notification-updated",
     loadAdminNotifications
   );
+  window.addEventListener("focus", refreshIfVisible);
+  const refreshTimer = window.setInterval(refreshIfVisible, 10000);
 
   return () => {
+    active = false;
+    window.clearInterval(refreshTimer);
+    window.removeEventListener("focus", refreshIfVisible);
     window.removeEventListener(
       "admin-task-notification-updated",
       loadAdminNotifications
     );
   };
-}, [role, token]);
+}, [role, token, user?.id, notificationsEnabled]);
 
   const items = role === "admin" ? navItems : userNavigation;
 
