@@ -18,7 +18,7 @@ export interface UserTableProps {
 
 const roleStyles = {
   admin:
-    "bg-indigo-50 text-indigo-700 ring-indigo-600/20 dark:bg-indigo-950/40 dark:text-indigo-300 dark:ring-indigo-500/30",
+    "bg-teal-50 text-teal-800 ring-teal-700/20 dark:bg-teal-950/40 dark:text-teal-300 dark:ring-teal-600/30",
   user:
     "bg-zinc-100 text-zinc-700 ring-zinc-600/10 dark:bg-zinc-800 dark:text-zinc-300 dark:ring-zinc-500/20",
 };
@@ -29,7 +29,7 @@ export default function UserTable({ users, onEdit, onDelete }: UserTableProps) {
       <div className="overflow-x-auto">
         {users.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-3 px-6 py-16 text-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-300">
+            <div className="flex h-14 w-14 items-center justify-center rounded-full bg-teal-50 text-teal-700 dark:bg-teal-950/40 dark:text-teal-300">
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -89,7 +89,7 @@ export default function UserTable({ users, onEdit, onDelete }: UserTableProps) {
                   className="transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
                 >
                   <td className="px-5 py-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 text-sm font-semibold text-white shadow-sm">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-teal-600 to-teal-600 text-sm font-semibold text-white shadow-sm">
                       {user.name.charAt(0).toUpperCase()}
                     </div>
                   </td>
@@ -121,7 +121,7 @@ export default function UserTable({ users, onEdit, onDelete }: UserTableProps) {
                       <button
                         type="button"
                         onClick={() => onEdit?.(user)}
-                        className="rounded-lg border border-zinc-200 bg-white p-2 text-zinc-600 transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-indigo-600/40 dark:hover:bg-indigo-950/40 dark:hover:text-indigo-300"
+                        className="rounded-lg border border-zinc-200 bg-white p-2 text-zinc-600 transition-colors hover:border-teal-200 hover:bg-teal-50 hover:text-teal-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-teal-700/40 dark:hover:bg-teal-950/40 dark:hover:text-teal-300"
                         aria-label={`Edit ${user.name}`}
                       >
                         <Pencil className="h-4 w-4" aria-hidden="true" />

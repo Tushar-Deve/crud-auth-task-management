@@ -14,8 +14,8 @@ export default function DashboardCard({
   value,
   growthText,
   icon: Icon,
-  iconClassName = "text-indigo-600 dark:text-indigo-400",
-  iconWrapperClassName = "bg-indigo-50 dark:bg-indigo-950/50",
+  iconClassName = "text-teal-700 dark:text-teal-400",
+  iconWrapperClassName = "bg-teal-50 dark:bg-teal-950/50",
 }: DashboardCardProps) {
   return (
     <article className="group rounded-2xl border border-zinc-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-700">

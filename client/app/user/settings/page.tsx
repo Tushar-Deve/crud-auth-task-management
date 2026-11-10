@@ -82,7 +82,7 @@ export default function UserSettingsPage() {
 
             <SettingsCard
               icon={Bell}
-              iconClassName="bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-300"
+              iconClassName="bg-teal-50 text-teal-700 dark:bg-teal-950/50 dark:text-teal-300"
               title="Notifications"
               subtitle="Control how you hear about your tasks."
             >
@@ -161,7 +161,7 @@ export default function UserSettingsPage() {
                       onChange={() =>
                         setTheme(option.value)
                       }
-                      className="h-4 w-4 rounded-full border-zinc-300 text-indigo-600 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-900"
+                      className="h-4 w-4 rounded-full border-zinc-300 text-teal-700 focus:ring-teal-600 dark:border-zinc-700 dark:bg-zinc-900"
                     />
 
                     <span className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
@@ -177,7 +177,7 @@ export default function UserSettingsPage() {
 
             <SettingsCard
               icon={CheckSquare}
-              iconClassName="bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-300"
+              iconClassName="bg-teal-50 text-teal-700 dark:bg-teal-950/50 dark:text-teal-300"
               title="Task Preferences"
               subtitle="Set your preferred task workspace defaults."
             >
@@ -202,7 +202,7 @@ export default function UserSettingsPage() {
                         event.target.value
                       )
                     }
-                    className="mt-2 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200"
+                    className="mt-2 w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200"
                   >
                     <option>List view</option>
                     <option>Board view</option>
@@ -348,9 +348,9 @@ function SwitchRow({
         role="switch"
         aria-checked={enabled}
         aria-label={`Toggle ${label}`}
-        className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500/40 ${
+        className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-teal-600/40 ${
           enabled
-            ? "bg-indigo-600"
+            ? "bg-teal-700"
             : "bg-zinc-300 dark:bg-zinc-700"
         }`}
       >

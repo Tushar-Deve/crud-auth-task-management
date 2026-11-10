@@ -1,8 +1,8 @@
 export default function HeroIllustration() {
   return (
     <div className="relative mx-auto w-full max-w-lg" aria-hidden="true">
-      <div className="absolute -left-6 top-8 hidden h-24 w-24 rounded-2xl bg-indigo-400/20 blur-2xl sm:block" />
-      <div className="absolute -right-4 bottom-4 hidden h-28 w-28 rounded-full bg-violet-400/20 blur-2xl sm:block" />
+      <div className="absolute -left-6 top-8 hidden h-24 w-24 rounded-2xl bg-teal-400/20 blur-2xl sm:block" />
+      <div className="absolute -right-4 bottom-4 hidden h-28 w-28 rounded-full bg-teal-400/20 blur-2xl sm:block" />
 
       <svg
         viewBox="0 0 480 320"
@@ -34,7 +34,7 @@ export default function HeroIllustration() {
           fill="#0f172a"
           stroke="#334155"
         />
-        <rect x="72" y="116" width="100" height="8" rx="4" fill="#6366f1" />
+        <rect x="72" y="116" width="100" height="8" rx="4" fill="#0f766e" />
         <rect x="72" y="132" width="128" height="6" rx="3" fill="#475569" />
         <rect x="72" y="148" width="90" height="6" rx="3" fill="#475569" />
         <circle cx="84" cy="172" r="6" fill="#22c55e" />
@@ -49,7 +49,7 @@ export default function HeroIllustration() {
           fill="#0f172a"
           stroke="#334155"
         />
-        <rect x="248" y="116" width="100" height="8" rx="4" fill="#8b5cf6" />
+        <rect x="248" y="116" width="100" height="8" rx="4" fill="#2dd4bf" />
         <rect x="248" y="132" width="128" height="6" rx="3" fill="#475569" />
         <circle cx="260" cy="156" r="6" fill="#22c55e" />
         <rect x="272" y="152" width="88" height="6" rx="3" fill="#64748b" />
@@ -81,8 +81,8 @@ export default function HeroIllustration() {
           width="48"
           height="40"
           rx="8"
-          fill="#312e81"
-          stroke="#6366f1"
+          fill="#134e4a"
+          stroke="#0f766e"
           strokeWidth="1.5"
         />
         <rect
@@ -98,7 +98,7 @@ export default function HeroIllustration() {
         <rect x="264" y="228" width="112" height="8" rx="4" fill="#475569" />
         <rect x="264" y="244" width="80" height="6" rx="3" fill="#334155" />
 
-        <circle cx="400" cy="52" r="14" fill="#6366f1" />
+        <circle cx="400" cy="52" r="14" fill="#0f766e" />
         <path
           d="M395 52 L399 56 L407 48"
           stroke="white"

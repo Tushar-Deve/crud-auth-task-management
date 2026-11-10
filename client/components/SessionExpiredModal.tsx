@@ -40,7 +40,7 @@ export default function SessionExpiredModal() {
           <button
             type="button"
             onClick={handleLogin}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-blue-700 active:scale-[0.98]"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-5 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-teal-800 active:scale-[0.98]"
           >
             <LogIn className="h-4 w-4" />
             Login Again

@@ -15,7 +15,7 @@ interface RecentUsersTableProps {
 
 const roleStyles = {
   admin:
-    "bg-indigo-50 text-indigo-700 ring-indigo-600/20 dark:bg-indigo-950/40 dark:text-indigo-300 dark:ring-indigo-500/30",
+    "bg-teal-50 text-teal-800 ring-teal-700/20 dark:bg-teal-950/40 dark:text-teal-300 dark:ring-teal-600/30",
   user:
     "bg-zinc-100 text-zinc-700 ring-zinc-600/10 dark:bg-zinc-800 dark:text-zinc-300 dark:ring-zinc-500/20",
 };
@@ -37,7 +37,7 @@ export default function RecentUsersTable({
 
         <Link
           href="/admin/users"
-          className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium text-indigo-600 transition-colors hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950/40"
+          className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium text-teal-700 transition-colors hover:bg-teal-50 dark:text-teal-400 dark:hover:bg-teal-950/40"
         >
           View all
           <ArrowUpRight className="h-4 w-4" />
@@ -63,7 +63,7 @@ export default function RecentUsersTable({
               >
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-600 text-white font-semibold">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-teal-700 text-white font-semibold">
                       {user.name.charAt(0).toUpperCase()}
                     </div>
 

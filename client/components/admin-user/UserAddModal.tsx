@@ -111,7 +111,7 @@ export default function UserAddModal({
                             autoComplete="name"
                             value={formData.name}
                             onChange={(event) => handleChange("name", event.target.value)}
-                            className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-sm text-zinc-900 outline-none transition focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-indigo-600 dark:focus:bg-zinc-950"
+                            className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-sm text-zinc-900 outline-none transition focus:border-teal-400 focus:bg-white focus:ring-2 focus:ring-teal-600/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-teal-700 dark:focus:bg-zinc-950"
                         />
                     </div>
 
@@ -129,7 +129,7 @@ export default function UserAddModal({
                             autoComplete="email"
                             value={formData.email}
                             onChange={(event) => handleChange("email", event.target.value)}
-                            className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-sm text-zinc-900 outline-none transition focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-indigo-600 dark:focus:bg-zinc-950"
+                            className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-sm text-zinc-900 outline-none transition focus:border-teal-400 focus:bg-white focus:ring-2 focus:ring-teal-600/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-teal-700 dark:focus:bg-zinc-950"
                         />
                     </div>
 
@@ -153,7 +153,7 @@ export default function UserAddModal({
                             autoComplete="new-password"
                             value={formData.password}
                             onChange={(event) => handleChange("password", event.target.value)}
-                            className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-sm text-zinc-900 outline-none transition focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-indigo-600 dark:focus:bg-zinc-950"
+                            className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-sm text-zinc-900 outline-none transition focus:border-teal-400 focus:bg-white focus:ring-2 focus:ring-teal-600/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-teal-700 dark:focus:bg-zinc-950"
                         />
                     </div>
 
@@ -170,7 +170,7 @@ export default function UserAddModal({
                         </button>
                         <button
                             type="submit"
-                            className="rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:from-indigo-500 hover:via-indigo-400 hover:to-violet-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+                            className="rounded-xl bg-gradient-to-r from-teal-700 via-teal-600 to-teal-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-600/20 transition hover:from-teal-600 hover:via-teal-400 hover:to-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-600/30"
                         >
                             {isEditMode ? "Update User" : "Create User"}
                         </button>

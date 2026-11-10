@@ -83,26 +83,26 @@ export default function ResetPasswordPage() {
           aria-hidden="true"
         />
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-slate-950/85 via-indigo-950/80 to-purple-950/85"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-slate-950/85 via-teal-950/80 to-teal-950/85"
           aria-hidden="true"
         />
         <div
-          className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl"
+          className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-teal-600/20 blur-3xl"
           aria-hidden="true"
         />
         <div
-          className="pointer-events-none absolute -right-32 bottom-32 h-72 w-72 rounded-full bg-purple-500/20 blur-3xl"
+          className="pointer-events-none absolute -right-32 bottom-32 h-72 w-72 rounded-full bg-teal-600/20 blur-3xl"
           aria-hidden="true"
         />
 
         <main className="relative z-10 flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
           <div className="animate-fade-in-up w-full max-w-lg">
-            <section className="rounded-3xl border border-white/20 bg-white/10 p-7 shadow-2xl shadow-indigo-950/40 backdrop-blur-xl sm:p-10">
+            <section className="rounded-3xl border border-white/20 bg-white/10 p-7 shadow-2xl shadow-teal-950/40 backdrop-blur-xl sm:p-10">
               <header className="mb-8 text-center">
-                <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 shadow-lg shadow-indigo-900/40">
+                <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-600 to-teal-700 shadow-lg shadow-teal-900/40">
                   <LayoutDashboard className="h-7 w-7 text-white" aria-hidden="true" />
                 </div>
-                <p className="text-sm font-semibold tracking-wide text-indigo-200 sm:text-base">
+                <p className="text-sm font-semibold tracking-wide text-teal-200 sm:text-base">
                   CRUD Auth Task Management Portal
                 </p>
                 <h1 className="mt-3 text-2xl font-bold tracking-tight text-white sm:text-3xl">
@@ -137,7 +137,7 @@ export default function ResetPasswordPage() {
                   type="submit"
                   disabled={isLoading}
                   aria-busy={isLoading}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-900/40 transition-all duration-300 hover:-translate-y-0.5 hover:from-indigo-500 hover:to-blue-500 hover:shadow-xl hover:shadow-indigo-700/50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 sm:text-base"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-700 to-teal-700 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-teal-900/40 transition-all duration-300 hover:-translate-y-0.5 hover:from-teal-600 hover:to-teal-600 hover:shadow-xl hover:shadow-teal-800/50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 sm:text-base"
                 >
                   {isLoading ? (
                     <>
@@ -200,7 +200,7 @@ function PasswordField({
           value={value}
           onChange={(event) => onChange(event.target.value)}
           placeholder={label === "New Password" ? "Enter your new password" : "Confirm your new password"}
-          className="w-full rounded-xl border border-white/15 bg-white/5 py-3 pl-10 pr-12 text-sm text-white placeholder:text-slate-400 outline-none transition-all focus:border-indigo-400/60 focus:bg-white/10 focus:ring-2 focus:ring-indigo-500/30 sm:text-base"
+          className="w-full rounded-xl border border-white/15 bg-white/5 py-3 pl-10 pr-12 text-sm text-white placeholder:text-slate-400 outline-none transition-all focus:border-teal-400/60 focus:bg-white/10 focus:ring-2 focus:ring-teal-600/30 sm:text-base"
         />
         <button
           type="button"

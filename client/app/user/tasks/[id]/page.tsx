@@ -149,7 +149,7 @@ export default function TaskDetailsPage() {
         return "bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300";
 
       case "in progress":
-        return "bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300";
+        return "bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-teal-300";
 
       default:
         return "bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300";
@@ -220,7 +220,7 @@ export default function TaskDetailsPage() {
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="mt-5 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-500"
+                  className="mt-5 rounded-xl bg-teal-700 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-teal-600"
                 >
                   Back to My Tasks
                 </button>
@@ -311,7 +311,7 @@ export default function TaskDetailsPage() {
                   <section className="rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
                     <div className="border-b border-zinc-200 px-5 py-4 sm:px-6 dark:border-zinc-800">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-teal-700 dark:bg-teal-950/50 dark:text-teal-400">
                           <User className="h-5 w-5" />
                         </div>
 
@@ -368,7 +368,7 @@ export default function TaskDetailsPage() {
                   <section className="rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
                     <div className="border-b border-zinc-200 px-5 py-4 sm:px-6 dark:border-zinc-800">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-teal-700 dark:bg-teal-950/50 dark:text-teal-300">
                           <User className="h-5 w-5" />
                         </div>
 

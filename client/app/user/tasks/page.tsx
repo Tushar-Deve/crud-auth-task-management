@@ -39,7 +39,7 @@ const statusStyles: Record<TaskStatus, string> = {
   Pending:
     "bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300",
   "In Progress":
-    "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300",
+    "bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-teal-300",
   completed:
     "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300",
 };
@@ -454,7 +454,7 @@ export default function MyTasksPage() {
                                   `/user/tasks/${task.id}`
                                 )
                               }
-                              className="rounded-lg p-2 text-indigo-600 transition-colors hover:bg-indigo-50 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 dark:text-indigo-400 dark:hover:bg-indigo-950/60 dark:hover:text-indigo-300"
+                              className="rounded-lg p-2 text-teal-700 transition-colors hover:bg-teal-50 hover:text-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-600/40 dark:text-teal-400 dark:hover:bg-teal-950/60 dark:hover:text-teal-300"
                             >
 
                               <Eye
@@ -490,7 +490,7 @@ export default function MyTasksPage() {
                                 );
 
                               }}
-                              className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/40 disabled:cursor-not-allowed disabled:opacity-50"
+                              className="rounded-lg bg-teal-700 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500/40 disabled:cursor-not-allowed disabled:opacity-50"
                             >
 
                               {task.status ===
@@ -525,7 +525,7 @@ export default function MyTasksPage() {
                                         handleDownload(attachment.fileUrl)
                                       }
                                       title={fileName}
-                                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-500 px-3 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/20 transition-all duration-200 hover:from-indigo-500 hover:via-indigo-400 hover:to-violet-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+                                      className="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-teal-700 via-teal-600 to-teal-600 px-3 py-2 text-sm font-medium text-white shadow-lg shadow-teal-600/20 transition-all duration-200 hover:from-teal-600 hover:via-teal-400 hover:to-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-600/30"
                                     >
                                       <Download
                                         className="h-4 w-4"

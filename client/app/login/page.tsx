@@ -147,26 +147,26 @@ export default function LoginPage() {
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-slate-950/85 via-indigo-950/80 to-purple-950/85"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-slate-950/85 via-teal-950/80 to-teal-950/85"
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl"
+        className="pointer-events-none absolute -left-32 top-20 h-72 w-72 rounded-full bg-teal-500/20 blur-3xl"
         aria-hidden="true"
       />
       <div
-        className="pointer-events-none absolute -right-32 bottom-32 h-72 w-72 rounded-full bg-purple-500/20 blur-3xl"
+        className="pointer-events-none absolute -right-32 bottom-32 h-72 w-72 rounded-full bg-teal-500/20 blur-3xl"
         aria-hidden="true"
       />
 
       {/* Main content — centered login card */}
       <main className="relative z-10 flex flex-1 items-center justify-center px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <div className="animate-fade-in-up w-full max-w-5xl">
-          <div className="grid gap-8 rounded-3xl border border-white/20 bg-white/10 p-8 shadow-2xl shadow-indigo-950/40 backdrop-blur-xl lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] sm:p-10">
+          <div className="grid gap-8 rounded-3xl border border-white/20 bg-white/10 p-8 shadow-2xl shadow-teal-950/40 backdrop-blur-xl lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] sm:p-10">
             {/* Header — logo, heading, subheading */}
             <div>
               <header className="mb-8 text-center">
-                <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 shadow-lg shadow-indigo-900/40">
+                <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-teal-700 shadow-lg shadow-teal-900/40">
                   <LayoutDashboard
                     className="h-7 w-7 text-white"
                     aria-hidden="true"
@@ -205,7 +205,7 @@ export default function LoginPage() {
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
                       placeholder="Enter your Email"
-                      className="w-full rounded-xl border border-white/15 bg-white/5 py-3 pl-10 pr-4 text-base text-white placeholder:text-slate-400 outline-none transition-all focus:border-indigo-400/60 focus:bg-white/10 focus:ring-2 focus:ring-indigo-500/30"
+                      className="w-full rounded-xl border border-white/15 bg-white/5 py-3 pl-10 pr-4 text-base text-white placeholder:text-slate-400 outline-none transition-all focus:border-teal-400/60 focus:bg-white/10 focus:ring-2 focus:ring-teal-500/30"
                     />
                   </div>
                 </div>
@@ -231,7 +231,7 @@ export default function LoginPage() {
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
                         placeholder="Enter your password"
-                        className="w-full rounded-xl border border-white/15 bg-white/5 py-3 pl-10 pr-12 text-base text-white placeholder:text-slate-400 outline-none transition-all focus:border-indigo-400/60 focus:bg-white/10 focus:ring-2 focus:ring-indigo-500/30"
+                        className="w-full rounded-xl border border-white/15 bg-white/5 py-3 pl-10 pr-12 text-base text-white placeholder:text-slate-400 outline-none transition-all focus:border-teal-400/60 focus:bg-white/10 focus:ring-2 focus:ring-teal-500/30"
                       />
                       <button
                         type="button"
@@ -256,7 +256,7 @@ export default function LoginPage() {
                   type="submit"
                   disabled={isDisabled}
                   aria-busy={isLoading}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-indigo-900/40 transition-all duration-300 hover:-translate-y-0.5 hover:from-indigo-500 hover:to-blue-500 hover:shadow-xl hover:shadow-indigo-700/50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-700 to-teal-700 px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-teal-900/40 transition-all duration-300 hover:-translate-y-0.5 hover:from-teal-500 hover:to-teal-600 hover:shadow-xl hover:shadow-teal-800/50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
                 >
                   {isLoading ? (
                     <>
@@ -278,7 +278,7 @@ export default function LoginPage() {
                       <button
                         type="button"
                         onClick={() => setIsForgotPassword(false)}
-                        className="mx-auto block text-sm font-medium text-indigo-300 transition-colors hover:text-indigo-200"
+                        className="mx-auto block text-sm font-medium text-teal-300 transition-colors hover:text-teal-200"
                       >
                         ← Back to Login
                       </button>
@@ -286,7 +286,7 @@ export default function LoginPage() {
                       <button
                         type="button"
                         onClick={() => setIsForgotPassword(true)}
-                        className="mx-auto block text-sm font-medium text-indigo-300 transition-colors hover:text-indigo-200"
+                        className="mx-auto block text-sm font-medium text-teal-300 transition-colors hover:text-teal-200"
                       >
                         Forgot Password?
                       </button>
@@ -295,7 +295,7 @@ export default function LoginPage() {
                       <button
                         type="button"
                         onClick={() => router.push("/register")}
-                        className="mx-auto block text-sm font-medium text-indigo-300 transition-colors hover:text-indigo-200"
+                        className="mx-auto block text-sm font-medium text-teal-300 transition-colors hover:text-teal-200"
                       >
                         Don't have an account? Register
                       </button>
@@ -313,17 +313,17 @@ export default function LoginPage() {
               >
                 <h2
                   id="role-info-heading"
-                  className="mb-4 text-center text-lg font-bold uppercase tracking-wider text-indigo-200"
+                  className="mb-4 text-center text-lg font-bold uppercase tracking-wider text-teal-200"
                 >
                   Login Credentials
                 </h2>
 
                 <div className="space-y-5">
                   {/* Admin login */}
-                  <div className="rounded-xl border border-indigo-400/20 bg-indigo-500/10 p-4">
+                  <div className="rounded-xl border border-teal-400/20 bg-teal-500/10 p-4">
                     <div className="mb-2 flex items-center gap-2">
                       <Shield
-                        className="h-4 w-4 text-indigo-300"
+                        className="h-4 w-4 text-teal-300"
                         aria-hidden="true"
                       />
                       <h3 className="text-lg font-bold text-white">
@@ -337,10 +337,10 @@ export default function LoginPage() {
                   </div>
 
                   {/* User login */}
-                  <div className="rounded-xl border border-blue-400/20 bg-blue-500/10 p-4">
+                  <div className="rounded-xl border border-teal-400/20 bg-teal-500/10 p-4">
                     <div className="mb-2 flex items-center gap-2">
                       <User
-                        className="h-4 w-4 text-blue-300"
+                        className="h-4 w-4 text-teal-300"
                         aria-hidden="true"
                       />
                       <h3 className="text-lg font-bold text-white">User Login</h3>

@@ -274,7 +274,7 @@ ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
           onClick={() => setCollapsed(!collapsed)}
           className="flex items-center gap-3"
         >
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-600 to-blue-600 shadow-md shadow-indigo-500/20">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-teal-700 to-teal-700 shadow-md shadow-teal-600/20">
               <LayoutDashboard className="h-5 w-5 text-white" aria-hidden="true" />
             </div>
             {!collapsed && (
@@ -314,7 +314,7 @@ ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
                 onClick={onClose}
                 className={`flex items-center rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${collapsed ? "justify-center" : "gap-3"
                   } ${item.active
-                    ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300"
+                    ? "bg-teal-50 text-teal-800 dark:bg-teal-950/60 dark:text-teal-300"
                     : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
                   }`}
               >

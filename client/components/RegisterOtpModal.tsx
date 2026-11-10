@@ -118,16 +118,16 @@ export default function RegisterOtpModal({
         >
 
             {/* Modal */}
-            <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/20 bg-white/10 shadow-2xl shadow-indigo-950/60 backdrop-blur-xl">
+            <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-white/20 bg-white/10 shadow-2xl shadow-teal-950/60 backdrop-blur-xl">
 
                 {/* Decorative glow */}
                 <div
-                    className="pointer-events-none absolute -left-20 -top-20 h-48 w-48 rounded-full bg-indigo-500/20 blur-3xl"
+                    className="pointer-events-none absolute -left-20 -top-20 h-48 w-48 rounded-full bg-teal-600/20 blur-3xl"
                     aria-hidden="true"
                 />
 
                 <div
-                    className="pointer-events-none absolute -bottom-20 -right-20 h-48 w-48 rounded-full bg-purple-500/20 blur-3xl"
+                    className="pointer-events-none absolute -bottom-20 -right-20 h-48 w-48 rounded-full bg-teal-600/20 blur-3xl"
                     aria-hidden="true"
                 />
 
@@ -146,7 +146,7 @@ export default function RegisterOtpModal({
                 <div className="relative px-6 py-8 sm:px-8">
 
                     {/* Icon */}
-                    <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-blue-600 shadow-lg shadow-indigo-900/40">
+                    <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-600 to-teal-700 shadow-lg shadow-teal-900/40">
                         <ShieldCheck
                             className="h-7 w-7 text-white"
                             aria-hidden="true"
@@ -172,7 +172,7 @@ export default function RegisterOtpModal({
                     {/* Email */}
                     <div className="mt-5 flex items-center gap-3 rounded-xl border border-white/15 bg-white/5 px-4 py-3">
                         <Mail
-                            className="h-4 w-4 shrink-0 text-indigo-300"
+                            className="h-4 w-4 shrink-0 text-teal-300"
                             aria-hidden="true"
                         />
 
@@ -209,7 +209,7 @@ export default function RegisterOtpModal({
                                 placeholder="Enter 6-digit OTP"
                                 autoFocus
                                 disabled={isLoading}
-                                className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3.5 text-center text-xl font-semibold tracking-[0.5em] text-white placeholder:text-sm placeholder:font-normal placeholder:tracking-normal placeholder:text-slate-500 outline-none transition-all focus:border-indigo-400/60 focus:bg-white/10 focus:ring-2 focus:ring-indigo-500/30 disabled:cursor-not-allowed disabled:opacity-60"
+                                className="w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3.5 text-center text-xl font-semibold tracking-[0.5em] text-white placeholder:text-sm placeholder:font-normal placeholder:tracking-normal placeholder:text-slate-500 outline-none transition-all focus:border-teal-400/60 focus:bg-white/10 focus:ring-2 focus:ring-teal-600/30 disabled:cursor-not-allowed disabled:opacity-60"
                             />
 
                         </div>
@@ -220,7 +220,7 @@ export default function RegisterOtpModal({
                             {timeLeft > 0 ? (
                                 <p className="text-sm text-slate-400">
                                     OTP expires in{" "}
-                                    <span className="font-semibold text-indigo-300">
+                                    <span className="font-semibold text-teal-300">
                                         00:{String(timeLeft).padStart(2, "0")}
                                     </span>
                                 </p>
@@ -240,7 +240,7 @@ export default function RegisterOtpModal({
                                 otp.length !== 6 ||
                                 timeLeft <= 0
                             }
-                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-900/40 transition-all duration-300 hover:-translate-y-0.5 hover:from-indigo-500 hover:to-blue-500 hover:shadow-xl hover:shadow-indigo-700/50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-700 to-teal-700 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-teal-900/40 transition-all duration-300 hover:-translate-y-0.5 hover:from-teal-600 hover:to-teal-600 hover:shadow-xl hover:shadow-teal-800/50 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
                         >
 
                             {isLoading ? (
@@ -257,7 +257,7 @@ export default function RegisterOtpModal({
                     </form>
 
                     {/* Information */}
-                    <div className="mt-5 rounded-xl border border-indigo-400/20 bg-indigo-500/10 p-4">
+                    <div className="mt-5 rounded-xl border border-teal-400/20 bg-teal-600/10 p-4">
 
                         <p className="text-center text-xs leading-relaxed text-slate-300">
                             Check your inbox and spam folder if you don't

@@ -97,16 +97,16 @@ export default function DashboardPage() {
               value={dashboardData?.stats?.totalUsers || 0}
               growthText="+12% from last month"
               icon={Users}
-              iconClassName="text-indigo-600 dark:text-indigo-400"
-              iconWrapperClassName="bg-indigo-50 dark:bg-indigo-950/50"
+              iconClassName="text-teal-700 dark:text-teal-400"
+              iconWrapperClassName="bg-teal-50 dark:bg-teal-950/50"
             />
             <DashboardCard
               title="Total Tasks"
               value={dashboardData?.stats?.totalTasks || 0}
               growthText="+8% from last month"
               icon={ClipboardList}
-              iconClassName="text-blue-600 dark:text-blue-400"
-              iconWrapperClassName="bg-blue-50 dark:bg-blue-950/50"
+              iconClassName="text-teal-700 dark:text-teal-400"
+              iconWrapperClassName="bg-teal-50 dark:bg-teal-950/50"
             />
             <DashboardCard
               title="Pending Tasks"

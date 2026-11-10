@@ -59,23 +59,23 @@ export default function Home() {
           />
 
           <div
-            className="absolute inset-0 bg-gradient-to-br from-slate-950/80 via-indigo-950/75 to-blue-950/80"
+            className="absolute inset-0 bg-gradient-to-br from-slate-950/80 via-teal-950/75 to-blue-950/80"
             aria-hidden="true"
           />
 
           <div
-            className="pointer-events-none absolute -left-32 top-1/4 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl"
+            className="pointer-events-none absolute -left-32 top-1/4 h-72 w-72 rounded-full bg-teal-600/20 blur-3xl"
             aria-hidden="true"
           />
           <div
-            className="pointer-events-none absolute -right-32 bottom-1/4 h-72 w-72 rounded-full bg-blue-500/20 blur-3xl"
+            className="pointer-events-none absolute -right-32 bottom-1/4 h-72 w-72 rounded-full bg-teal-500/20 blur-3xl"
             aria-hidden="true"
           />
 
           <div className="animate-fade-in-up relative z-10 w-full max-w-2xl">
-            <div className="rounded-3xl border border-white/20 bg-white/10 p-8 shadow-2xl shadow-indigo-950/40 backdrop-blur-xl sm:p-10 md:p-12">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-indigo-300/30 bg-indigo-500/15 px-4 py-1.5 text-xs font-medium tracking-wide text-indigo-100 sm:text-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+            <div className="rounded-3xl border border-white/20 bg-white/10 p-8 shadow-2xl shadow-teal-950/40 backdrop-blur-xl sm:p-10 md:p-12">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-teal-300/30 bg-teal-600/15 px-4 py-1.5 text-xs font-medium tracking-wide text-teal-100 sm:text-sm">
+                <span className="h-1.5 w-1.5 rounded-full bg-teal-400" />
                 Task Management Platform
               </div>
 
@@ -93,7 +93,7 @@ export default function Home() {
                 {/* Visit Portal */}
                 <Link
                   href="/login"
-                  className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-indigo-900/40 transition-all duration-300 hover:-translate-y-0.5 hover:bg-indigo-500 hover:shadow-xl hover:shadow-indigo-700/50 sm:w-auto sm:min-w-[220px] sm:text-lg"
+                  className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-teal-900/40 transition-all duration-300 hover:-translate-y-0.5 hover:bg-teal-600 hover:shadow-xl hover:shadow-teal-800/50 sm:w-auto sm:min-w-[220px] sm:text-lg"
                 >
                   Visit Portal →
                 </Link>

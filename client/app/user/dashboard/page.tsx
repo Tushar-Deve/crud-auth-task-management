@@ -97,8 +97,8 @@ export default function UserDashboardPage() {
                             value={taskStats.total}
                             growthText="Your assigned tasks"
                             icon={ClipboardList}
-                            iconClassName="text-indigo-600 dark:text-indigo-400"
-                            iconWrapperClassName="bg-indigo-50 dark:bg-indigo-950/50"
+                            iconClassName="text-teal-700 dark:text-teal-400"
+                            iconWrapperClassName="bg-teal-50 dark:bg-teal-950/50"
                         />
 
                         <DashboardCard

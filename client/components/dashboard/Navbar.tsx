@@ -290,7 +290,7 @@ export default function Navbar({
                 type="search"
                 placeholder="Search..."
                 aria-label="Search dashboard"
-                className="w-48 rounded-xl border border-zinc-200 bg-zinc-50 py-2 pl-9 pr-4 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-indigo-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 lg:w-64 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-indigo-600 dark:focus:bg-zinc-950"
+                className="w-48 rounded-xl border border-zinc-200 bg-zinc-50 py-2 pl-9 pr-4 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-teal-300 focus:bg-white focus:ring-2 focus:ring-teal-600/20 lg:w-64 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-teal-700 dark:focus:bg-zinc-950"
               />
             </div>
 
@@ -372,12 +372,12 @@ export default function Navbar({
             <button
               type="button"
               onClick={handleOpenProfile}
-              className="flex items-center gap-3 rounded-xl border border-zinc-200 py-1.5 pl-1.5 pr-3 text-left transition-colors hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 dark:border-zinc-700 dark:hover:bg-zinc-900"
+              className="flex items-center gap-3 rounded-xl border border-zinc-200 py-1.5 pl-1.5 pr-3 text-left transition-colors hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-teal-600/40 dark:border-zinc-700 dark:hover:bg-zinc-900"
               aria-label="Open profile details"
             >
 
               {/* Initials */}
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 text-sm font-semibold text-white">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-teal-600 to-teal-700 text-sm font-semibold text-white">
                 {initials}
               </div>
 
@@ -389,7 +389,7 @@ export default function Navbar({
                 </p>
 
                 {/* Role */}
-                <span className="inline-flex items-center gap-1 rounded-md bg-indigo-50 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300">
+                <span className="inline-flex items-center gap-1 rounded-md bg-teal-50 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-teal-800 dark:bg-teal-950/60 dark:text-teal-300">
                   <Shield className="h-2.5 w-2.5" aria-hidden="true" />
                   {userRole}
                 </span>
@@ -421,7 +421,7 @@ export default function Navbar({
 
             <div className="p-6">
               <div className="flex flex-col items-center justify-center gap-3 pb-6">
-                <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-2xl font-bold text-white shadow-lg shadow-indigo-500/20">
+                <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-600 to-teal-700 text-2xl font-bold text-white shadow-lg shadow-teal-600/20">
                   {profileInitials}
                 </div>
 
@@ -430,7 +430,7 @@ export default function Navbar({
                     {profileName}
                   </h3>
 
-                  <div className="mt-1 inline-flex items-center gap-1 rounded-md bg-indigo-50 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300">
+                  <div className="mt-1 inline-flex items-center gap-1 rounded-md bg-teal-50 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-teal-800 dark:bg-teal-950/60 dark:text-teal-300">
                     <Shield className="h-3 w-3" aria-hidden="true" />
                     {profileRole}
                   </div>

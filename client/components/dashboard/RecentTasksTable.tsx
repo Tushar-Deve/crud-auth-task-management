@@ -28,7 +28,7 @@ const statusStyles = {
   pending:
     "bg-amber-50 text-amber-700 ring-amber-600/20 dark:bg-amber-950/40 dark:text-amber-300 dark:ring-amber-500/30",
     "in-progress":
-    "bg-blue-50 text-blue-700 ring-blue-600/20 dark:bg-blue-950/40 dark:text-blue-300 dark:ring-blue-500/30",
+    "bg-blue-50 text-blue-700 ring-blue-600/20 dark:bg-blue-950/40 dark:text-teal-300 dark:ring-blue-500/30",
     completed:
     "bg-emerald-50 text-emerald-700 ring-emerald-600/20 dark:bg-emerald-950/40 dark:text-emerald-300 dark:ring-emerald-500/30",
 };
@@ -64,7 +64,7 @@ export default function RecentTasksTable({
         {viewAllHref && (
           <Link
             href={viewAllHref}
-            className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium text-indigo-600 transition-colors hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950/40"
+            className="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium text-teal-700 transition-colors hover:bg-teal-50 dark:text-teal-400 dark:hover:bg-teal-950/40"
           >
             View all
             <ArrowUpRight className="h-4 w-4" />
@@ -133,7 +133,7 @@ export default function RecentTasksTable({
                       <button
                         type="button"
                         onClick={() => onEdit?.(task)}
-                        className="rounded-lg p-2 text-indigo-600 transition-colors hover:bg-indigo-50 dark:text-indigo-400 dark:hover:bg-indigo-950/40"
+                        className="rounded-lg p-2 text-teal-700 transition-colors hover:bg-teal-50 dark:text-teal-400 dark:hover:bg-teal-950/40"
                         aria-label={`Edit ${task.title}`}
                       >
                         <Pencil className="h-4 w-4" />

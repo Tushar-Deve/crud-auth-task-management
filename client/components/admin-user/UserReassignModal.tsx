@@ -136,7 +136,7 @@ export default function UserReassignModal({ open, onClose, userId, onSuccess}: U
                 role="dialog"
             >
                 <div className="flex items-start gap-4">
-                    <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
+                    <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-teal-100 text-teal-700 dark:bg-teal-950/60 dark:text-teal-400">
                         <Users aria-hidden="true" className="size-5" strokeWidth={2.25} />
                     </div>
                     <div className="min-w-0 pt-0.5">
@@ -169,7 +169,7 @@ export default function UserReassignModal({ open, onClose, userId, onSuccess}: U
                             const value = e.target.value;
                             setSelectedUser(value ? Number(value) : "");
                         }}
-                        className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-sm text-zinc-900 outline-none transition focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-indigo-600 dark:focus:bg-zinc-950"
+                        className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3.5 py-2.5 text-sm text-zinc-900 outline-none transition focus:border-teal-400 focus:bg-white focus:ring-2 focus:ring-teal-600/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:focus:border-teal-700 dark:focus:bg-zinc-950"
                     >
                         <option value="">Select User</option>
 
@@ -197,7 +197,7 @@ export default function UserReassignModal({ open, onClose, userId, onSuccess}: U
                         type="button"
                         onClick={handleTransferAndDelete}
                         disabled={loading || !selectedUser}
-                        className="rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:from-indigo-500 hover:via-indigo-400 hover:to-violet-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 disabled:cursor-not-allowed disabled:opacity-60"
+                        className="rounded-xl bg-gradient-to-r from-teal-700 via-teal-600 to-teal-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-600/20 transition hover:from-teal-600 hover:via-teal-400 hover:to-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-600/30 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         Transfer & Delete
                     </button>

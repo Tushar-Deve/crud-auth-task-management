@@ -222,7 +222,7 @@ export default function TaskHistoryPage() {
               <button
                 type="button"
                 onClick={goToTaskManagement}
-                className="rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
+                className="rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900 focus:outline-none focus:ring-2 focus:ring-teal-600/40 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
                 aria-label="Close task history"
               >
                 <X className="h-5 w-5" />
@@ -252,7 +252,7 @@ export default function TaskHistoryPage() {
                     }}
                     placeholder="Search user or task..."
                     aria-label="Search user or task"
-                    className="w-full rounded-xl border border-zinc-200 bg-white py-2.5 pl-10 pr-4 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-indigo-300 focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-indigo-600"
+                    className="w-full rounded-xl border border-zinc-200 bg-white py-2.5 pl-10 pr-4 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-teal-300 focus:ring-2 focus:ring-teal-600/20 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-teal-700"
                   />
 
                 </div>
@@ -265,7 +265,7 @@ export default function TaskHistoryPage() {
                     setCurrentPage(1);
                   }}
                   aria-label="Filter by user"
-                  className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 outline-none transition-all focus:border-indigo-300 focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-200 dark:focus:border-indigo-600 lg:w-52"
+                  className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 outline-none transition-all focus:border-teal-300 focus:ring-2 focus:ring-teal-600/20 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-200 dark:focus:border-teal-700 lg:w-52"
                 >
                   <option value="all">All Users</option>
 
@@ -295,7 +295,7 @@ export default function TaskHistoryPage() {
                       setCurrentPage(1);
                     }}
                     aria-label="Filter by completed date"
-                    className="w-full rounded-xl border border-zinc-200 bg-white py-2.5 pl-10 pr-3.5 text-sm text-zinc-700 outline-none transition-all focus:border-indigo-300 focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-200 dark:focus:border-indigo-600"
+                    className="w-full rounded-xl border border-zinc-200 bg-white py-2.5 pl-10 pr-3.5 text-sm text-zinc-700 outline-none transition-all focus:border-teal-300 focus:ring-2 focus:ring-teal-600/20 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-200 dark:focus:border-teal-700"
                   />
 
                 </div>

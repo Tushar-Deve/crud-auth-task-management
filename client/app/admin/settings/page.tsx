@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import {
@@ -78,7 +78,7 @@ export default function SettingsPage() {
 
             <section className="rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
               <div className="flex items-center gap-3 border-b border-zinc-200 px-6 py-5 dark:border-zinc-800">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-300">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-teal-700 dark:bg-teal-950/50 dark:text-teal-300">
                   <User
                     className="h-5 w-5"
                     aria-hidden="true"
@@ -188,7 +188,7 @@ export default function SettingsPage() {
                         onChange={() =>
                           setTheme(option.value)
                         }
-                        className="h-4 w-4 rounded-full border-zinc-300 text-indigo-600 focus:ring-indigo-500 dark:border-zinc-700 dark:bg-zinc-900"
+                        className="h-4 w-4 rounded-full border-zinc-300 text-teal-700 focus:ring-teal-600 dark:border-zinc-700 dark:bg-zinc-900"
                       />
 
                       <span className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
@@ -204,7 +204,7 @@ export default function SettingsPage() {
 
             <section className="rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
               <div className="flex items-center gap-3 border-b border-zinc-200 px-6 py-5 dark:border-zinc-800">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-300">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-teal-700 dark:bg-teal-950/50 dark:text-teal-300">
                   <Bell
                     className="h-5 w-5"
                     aria-hidden="true"
@@ -245,7 +245,7 @@ export default function SettingsPage() {
                       }}
                       className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${
                         taskNotifications
-                          ? "bg-indigo-600"
+                          ? "bg-teal-700"
                           : "bg-zinc-300 dark:bg-zinc-700"
                       }`}
                       aria-label="Toggle task notifications"
@@ -281,7 +281,7 @@ export default function SettingsPage() {
                       }
                       className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${
                         emailNotifications
-                          ? "bg-indigo-600"
+                          ? "bg-teal-700"
                           : "bg-zinc-300 dark:bg-zinc-700"
                       }`}
                       aria-label="Toggle email notifications"

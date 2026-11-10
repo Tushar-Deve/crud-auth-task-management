@@ -17,7 +17,7 @@ export default function UserHeader({
     <section className="rounded-2xl border border-zinc-200 bg-white/80 p-5 shadow-sm shadow-zinc-200/60 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/70 dark:shadow-none">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 items-start gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-300">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-700 dark:bg-teal-950/60 dark:text-teal-300">
             <Users2 className="h-5 w-5" />
           </div>
 

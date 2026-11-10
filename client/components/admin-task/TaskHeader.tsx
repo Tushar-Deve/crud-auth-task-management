@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useRouter } from "next/navigation";
 import { Plus, Search, History } from "lucide-react";
@@ -39,7 +39,7 @@ export default function TaskHeader({
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder="Search task or user..."
               aria-label="Search tasks or users"
-              className="w-full rounded-xl border border-zinc-200 bg-zinc-50 py-2 pl-9 pr-4 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-indigo-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-indigo-600 dark:focus:bg-zinc-950"
+              className="w-full rounded-xl border border-zinc-200 bg-zinc-50 py-2 pl-9 pr-4 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-teal-300 focus:bg-white focus:ring-2 focus:ring-teal-600/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-teal-700 dark:focus:bg-zinc-950"
             />
           </div>
 
@@ -52,7 +52,7 @@ export default function TaskHeader({
               )
             }
             aria-label="Filter tasks by priority"
-            className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-700 outline-none transition-all focus:border-indigo-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:focus:border-indigo-600 dark:focus:bg-zinc-950"
+            className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-700 outline-none transition-all focus:border-teal-300 focus:bg-white focus:ring-2 focus:ring-teal-600/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:focus:border-teal-700 dark:focus:bg-zinc-950"
           >
             <option value="all">All Priorities</option>
             <option value="low">Low</option>
@@ -67,7 +67,7 @@ export default function TaskHeader({
           <button
   type="button"
   onClick={() => router.push("/admin/tasks/task-history")}
-  className="relative inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all duration-200 hover:from-indigo-500 hover:via-indigo-400 hover:to-violet-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+  className="relative inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-700 via-teal-600 to-teal-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-600/20 transition-all duration-200 hover:from-teal-600 hover:via-teal-400 hover:to-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-600/30"
 >
   <History className="h-4 w-4" aria-hidden="true" />
 
@@ -84,7 +84,7 @@ export default function TaskHeader({
           <button
             type="button"
             onClick={() => router.push("/admin/tasks/create")}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all duration-200 hover:from-indigo-500 hover:via-indigo-400 hover:to-violet-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-700 via-teal-600 to-teal-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-600/20 transition-all duration-200 hover:from-teal-600 hover:via-teal-400 hover:to-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-600/30"
           >
             <Plus className="h-4 w-4" aria-hidden="true" />
             <span>Create Task</span>

@@ -32,7 +32,7 @@ export default function UserToolbar({
               value={searchValue}
               onChange={(event) => onSearchChange?.(event.target.value)}
               placeholder="Search users by name or email..."
-              className="w-full rounded-xl border border-zinc-200 bg-zinc-50 py-2.5 pl-10 pr-4 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-indigo-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-indigo-600 dark:focus:bg-zinc-950"
+              className="w-full rounded-xl border border-zinc-200 bg-zinc-50 py-2.5 pl-10 pr-4 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-teal-300 focus:bg-white focus:ring-2 focus:ring-teal-600/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-50 dark:placeholder:text-zinc-500 dark:focus:border-teal-700 dark:focus:bg-zinc-950"
             />
           </label>
 
@@ -44,7 +44,7 @@ export default function UserToolbar({
               id="role-filter"
               value={roleValue}
               onChange={(event) => onRoleChange?.(event.target.value)}
-              className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-sm font-medium text-zinc-700 outline-none transition-all focus:border-indigo-300 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:focus:border-indigo-600 dark:focus:bg-zinc-950"
+              className="w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-sm font-medium text-zinc-700 outline-none transition-all focus:border-teal-300 focus:bg-white focus:ring-2 focus:ring-teal-600/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:focus:border-teal-700 dark:focus:bg-zinc-950"
             >
               <option value="all">All Roles</option>
               <option value="admin">Admin</option>
@@ -56,7 +56,7 @@ export default function UserToolbar({
         <button
           type="button"
           onClick={onAddUser}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-500 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all duration-200 hover:from-indigo-500 hover:via-indigo-400 hover:to-violet-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-teal-700 via-teal-600 to-teal-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-teal-600/20 transition-all duration-200 hover:from-teal-600 hover:via-teal-400 hover:to-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-600/30"
         >
           <Plus className="h-4 w-4" aria-hidden="true" />
           <span>Add User</span>
