@@ -46,36 +46,54 @@ export default function TaskHistoryPage() {
   // -------------------------
 
   useEffect(() => {
-  const fetchTaskHistory = async () => {
-    try {
-      setLoading(true);
-      setError("");
+    let isActive = true;
+    let requestInProgress = false;
 
-      const response = await getTaskHistory();
+    const fetchTaskHistory = async (showLoading = false) => {
+      if (requestInProgress || !isActive) return;
+      requestInProgress = true;
 
-      setTaskHistoryData(response.history || []);
+      try {
+        if (showLoading) setError("");
 
-      // Task History page open ho gaya,
-      // isliye unread notifications ko read mark karo.
-      await markTaskHistoryAsRead();
+        const response = await getTaskHistory();
 
-      // Sidebar ko immediately notification update karne ke liye event
-      window.dispatchEvent(
-        new Event("admin-task-notification-updated")
-      );
+        if (isActive) setTaskHistoryData(response.history || []);
 
-    } catch (error) {
-      console.error("Failed to load task history:", error);
+        // Keep the history page's unread count clear while it is being viewed.
+        await markTaskHistoryAsRead();
+        if (isActive) {
+          window.dispatchEvent(
+            new Event("admin-task-notification-updated")
+          );
+        }
+      } catch (error) {
+        if (showLoading && isActive) {
+          console.error("Failed to load task history:", error);
+          setError("Failed to load task history");
+          setTaskHistoryData([]);
+        }
+      } finally {
+        requestInProgress = false;
+        if (showLoading && isActive) setLoading(false);
+      }
+    };
 
-      setError("Failed to load task history");
-      setTaskHistoryData([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+    void fetchTaskHistory(true);
+    const refreshIfVisible = () => {
+      if (document.visibilityState === "visible") void fetchTaskHistory();
+    };
+    const refreshTimer = window.setInterval(refreshIfVisible, 10000);
+    document.addEventListener("visibilitychange", refreshIfVisible);
+    window.addEventListener("focus", refreshIfVisible);
 
-  fetchTaskHistory();
-}, []);
+    return () => {
+      isActive = false;
+      window.clearInterval(refreshTimer);
+      document.removeEventListener("visibilitychange", refreshIfVisible);
+      window.removeEventListener("focus", refreshIfVisible);
+    };
+  }, []);
 
   // -------------------------
   // Unique Users

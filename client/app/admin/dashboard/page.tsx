@@ -39,20 +39,39 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!token) {
-      ;
       return;
     }
+
+    let isActive = true;
+    let requestInProgress = false;
+
     const fetchDashboard = async () => {
+      if (requestInProgress || !isActive) return;
+      requestInProgress = true;
       try {
-
         const data = await getDashboard();
-
-        setDashboardData(data);
+        if (isActive) setDashboardData(data);
       } catch {
+        // Keep the last successful dashboard data during transient failures.
+      } finally {
+        requestInProgress = false;
       }
     };
 
-    fetchDashboard();
+    void fetchDashboard();
+    const refreshIfVisible = () => {
+      if (document.visibilityState === "visible") void fetchDashboard();
+    };
+    const refreshTimer = window.setInterval(refreshIfVisible, 10000);
+    document.addEventListener("visibilitychange", refreshIfVisible);
+    window.addEventListener("focus", refreshIfVisible);
+
+    return () => {
+      isActive = false;
+      window.clearInterval(refreshTimer);
+      document.removeEventListener("visibilitychange", refreshIfVisible);
+      window.removeEventListener("focus", refreshIfVisible);
+    };
   }, [token]);
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">

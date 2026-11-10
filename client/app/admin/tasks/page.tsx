@@ -79,11 +79,15 @@ const [notificationCount, setNotificationCount] = useState(0);
         const response = await getTasks(token);
         setTasks(response?.tasks || []);
       } catch {
-        
+        // Keep the last successful task list visible during transient failures.
       }
     };
 
     fetchTasks();
+    const refreshTimer = window.setInterval(() => {
+      if (document.visibilityState === "visible") fetchTasks();
+    }, 10000);
+    return () => window.clearInterval(refreshTimer);
   }, [token]);
 
   useEffect(() => {
@@ -277,6 +281,7 @@ const [notificationCount, setNotificationCount] = useState(0);
 
                       setIsDeleteModalOpen(false);
                       setTaskToDelete(null);
+                      setTasks((current) => current.filter((task) => String(task.id) !== String(taskToDelete.id)));
 
                       // Refresh task table
                       const data = await getDashboard();

@@ -52,38 +52,62 @@ export default function TaskDetailsPage() {
   );
 
   useEffect(() => {
-    const fetchTaskDetails = async () => {
+    let isActive = true;
+    let requestInProgress = false;
+
+    const fetchTaskDetails = async (showLoading = false) => {
+      if (requestInProgress || !isActive) return;
       if (!token) {
-        setError("Authentication token not found.");
-        setLoading(false);
+        if (showLoading) {
+          setError("Authentication token not found.");
+          setLoading(false);
+        }
         return;
       }
 
       if (!taskId) {
-        setError("Task ID not found.");
-        setLoading(false);
+        if (showLoading) {
+          setError("Task ID not found.");
+          setLoading(false);
+        }
         return;
       }
 
+      requestInProgress = true;
       try {
-        setLoading(true);
-        setError("");
+        if (showLoading) setError("");
 
         const response = await getTaskById(taskId);
 
         if (response?.success && response?.task) {
-          setTask(response.task);
+          if (isActive) setTask(response.task);
         } else {
-          setError(response?.message || "Task details not found.");
+          if (showLoading && isActive) {
+            setError(response?.message || "Task details not found.");
+          }
         }
       } catch (error) {
-        setError("Failed to load task details.");
+        if (showLoading && isActive) setError("Failed to load task details.");
       } finally {
-        setLoading(false);
+        requestInProgress = false;
+        if (showLoading && isActive) setLoading(false);
       }
     };
 
-    fetchTaskDetails();
+    void fetchTaskDetails(true);
+    const refreshIfVisible = () => {
+      if (document.visibilityState === "visible") void fetchTaskDetails();
+    };
+    const refreshTimer = window.setInterval(refreshIfVisible, 10000);
+    document.addEventListener("visibilitychange", refreshIfVisible);
+    window.addEventListener("focus", refreshIfVisible);
+
+    return () => {
+      isActive = false;
+      window.clearInterval(refreshTimer);
+      document.removeEventListener("visibilitychange", refreshIfVisible);
+      window.removeEventListener("focus", refreshIfVisible);
+    };
   }, [token, taskId]);
 
   const handleClose = () => {

@@ -65,16 +65,20 @@ export default function MyTasksPage() {
   // -------------------------
 
   useEffect(() => {
-    const fetchTasks = async () => {
+    let requestInProgress = false;
+    let isActive = true;
+
+    const fetchTasks = async (showLoading = false) => {
+      if (requestInProgress || !isActive) return;
       if (!token) {
         setError("Authentication token not found.");
         setLoading(false);
         return;
       }
 
+      requestInProgress = true;
       try {
-        setLoading(true);
-        setError("");
+        if (showLoading) setLoading(true);
 
         const response = await getMyTasks();
 
@@ -103,19 +107,34 @@ export default function MyTasksPage() {
           }))
           : [];
 
-        setTasks(formattedTasks);
+        if (isActive) {
+          setTasks(formattedTasks);
+          setError("");
+        }
       } catch (error: any) {
         if (error?.response?.status === 401) {
           return;
         }
-        setError("Failed to load tasks.");
-        setTasks([]);
+        if (isActive && showLoading) setError("Failed to load tasks.");
       } finally {
-        setLoading(false);
+        requestInProgress = false;
+        if (isActive && showLoading) setLoading(false);
       }
     };
 
-    fetchTasks();
+    fetchTasks(true);
+    const refreshIfVisible = () => {
+      if (document.visibilityState === "visible") void fetchTasks();
+    };
+    const refreshTimer = window.setInterval(refreshIfVisible, 10000);
+    document.addEventListener("visibilitychange", refreshIfVisible);
+    window.addEventListener("focus", refreshIfVisible);
+    return () => {
+      isActive = false;
+      window.clearInterval(refreshTimer);
+      document.removeEventListener("visibilitychange", refreshIfVisible);
+      window.removeEventListener("focus", refreshIfVisible);
+    };
   }, [token]);
 
   // -------------------------

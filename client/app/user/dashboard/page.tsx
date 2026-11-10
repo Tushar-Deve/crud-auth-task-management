@@ -33,21 +33,39 @@ export default function UserDashboardPage() {
             return;
         }
 
-       const fetchMyTasks = async () => {
-    try {
-        const data = await getMyTasks();
+        let isActive = true;
+        let requestInProgress = false;
 
-        setTasks(data.tasks || []);
-    } catch (error: any) {
-        if (error?.response?.status === 401) {
-            return;
-        }
+        const fetchMyTasks = async () => {
+            if (requestInProgress || !isActive) return;
+            requestInProgress = true;
+            try {
+                const data = await getMyTasks();
 
-        console.error("Failed to fetch tasks:", error);
-    }
-};
+                if (isActive) setTasks(data.tasks || []);
+            } catch (error: any) {
+                if (error?.response?.status !== 401) {
+                    console.error("Failed to fetch tasks:", error);
+                }
+            } finally {
+                requestInProgress = false;
+            }
+        };
 
-        fetchMyTasks();
+        void fetchMyTasks();
+        const refreshIfVisible = () => {
+            if (document.visibilityState === "visible") void fetchMyTasks();
+        };
+        const refreshTimer = window.setInterval(refreshIfVisible, 10000);
+        document.addEventListener("visibilitychange", refreshIfVisible);
+        window.addEventListener("focus", refreshIfVisible);
+
+        return () => {
+            isActive = false;
+            window.clearInterval(refreshTimer);
+            document.removeEventListener("visibilitychange", refreshIfVisible);
+            window.removeEventListener("focus", refreshIfVisible);
+        };
     }, [token]);
 
     return (

@@ -53,8 +53,40 @@ export default function UsersPage() {
   };
 
   useEffect(() => {
-    fetchUsers();
-  }, [token]);
+    if (!token || openModal || deleteModalOpen || reassignModalOpen) return;
+
+    let isActive = true;
+    let requestInProgress = false;
+
+    const refreshUsers = async () => {
+      if (requestInProgress || !isActive) return;
+      requestInProgress = true;
+
+      try {
+        const data = await getAllUsers(token);
+        if (isActive) setUsers(data.users);
+      } catch (error) {
+        if (isActive) console.error(error);
+      } finally {
+        requestInProgress = false;
+      }
+    };
+
+    void refreshUsers();
+    const refreshIfVisible = () => {
+      if (document.visibilityState === "visible") void refreshUsers();
+    };
+    const refreshTimer = window.setInterval(refreshIfVisible, 10000);
+    document.addEventListener("visibilitychange", refreshIfVisible);
+    window.addEventListener("focus", refreshIfVisible);
+
+    return () => {
+      isActive = false;
+      window.clearInterval(refreshTimer);
+      document.removeEventListener("visibilitychange", refreshIfVisible);
+      window.removeEventListener("focus", refreshIfVisible);
+    };
+  }, [token, openModal, deleteModalOpen, reassignModalOpen]);
 
   // ----------------
   // Add User Modal 
