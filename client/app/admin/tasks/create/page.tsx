@@ -262,7 +262,7 @@ export default function CreateTaskPage() {
                     <label htmlFor="attachment" className="mt-2 flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-zinc-300 bg-zinc-50 px-3.5 py-2.5 text-sm text-zinc-600 transition-colors hover:border-teal-300 hover:bg-teal-50/50 focus-within:border-teal-600 focus-within:ring-2 focus-within:ring-teal-600/20 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-teal-800 dark:hover:bg-teal-950/30">
                       <Upload className="h-4 w-4 shrink-0 text-teal-600" aria-hidden="true" />
                       <span className="min-w-0 truncate">{attachmentName || "Choose a file"}</span>
-                      <input id="attachment" type="file" onChange={handleAttachmentChange} className="sr-only" />
+                      <input id="attachment" type="file" accept=".pdf,application/pdf" onChange={handleAttachmentChange} className="sr-only" />
                     </label>
                     {attachmentName && <p className="mt-1.5 flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400"><Paperclip className="h-3.5 w-3.5" aria-hidden="true" />{attachmentName}</p>}
                   </div>

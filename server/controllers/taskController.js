@@ -1,4 +1,11 @@
 const db = require("../config/db");
+const {
+    createAttachmentDownloadHandlers,
+    insertAttachmentMetadata,
+    removeUploadedFile,
+} = require("../utils/taskAttachments");
+
+const attachmentDownloads = createAttachmentDownloadHandlers(db);
 
 // ------------
 // Create task API
@@ -7,6 +14,7 @@ const db = require("../config/db");
 exports.createTask = async (req, res) => {
     let client;
     let transactionOpen = false;
+    let attachmentSaved = false;
     try {
         const { title, description, priority, due_date, assignedTo, } = req.body || {};
 
@@ -15,6 +23,7 @@ exports.createTask = async (req, res) => {
 
         // 🔐 Only admin can create task
         if (role !== "admin") {
+            await removeUploadedFile(req.file);
             return res.status(403).json({
                 success: false,
                 message: "Only admin can create task"
@@ -23,6 +32,7 @@ exports.createTask = async (req, res) => {
 
         // 🧪 Validation
         if (!title || !assignedTo) {
+            await removeUploadedFile(req.file);
             return res.status(400).json({
                 success: false,
                 message: "Title and assigned are required"
@@ -30,6 +40,7 @@ exports.createTask = async (req, res) => {
         }
 
         if (assignedTo === userId) {
+            await removeUploadedFile(req.file);
             return res.status(400).json({
                 success: false,
                 message: "Admin cannot assign task to themselves"
@@ -42,6 +53,7 @@ exports.createTask = async (req, res) => {
         );
 
         if (userCheck.rows.length === 0) {
+            await removeUploadedFile(req.file);
             return res.status(404).json({
                 success: false,
                 message: "User not found"
@@ -71,21 +83,13 @@ exports.createTask = async (req, res) => {
         await client.query("COMMIT");
         transactionOpen = false;
         
-        // File attachment
         if (req.file) {
-
-            const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
-
-            const attachResult = await db.query(
-                `INSERT INTO "TaskAttachments"
-        (taskid, fileurl, uploadedby)
-        VALUES ($1, $2, $3)
-        RETURNING *`,
-                [task.id, fileUrl, userId]
-            );
-
-        }else {
-
+            await insertAttachmentMetadata(db, {
+                taskId: task.id,
+                uploadedBy: userId,
+                file: req.file,
+            });
+            attachmentSaved = true;
 }
 
         res.status(201).json({
@@ -95,6 +99,10 @@ exports.createTask = async (req, res) => {
         })
     }
     catch (error) {
+
+        if (req.file && !attachmentSaved) {
+            await removeUploadedFile(req.file);
+        }
 
         if (client && transactionOpen) {
             await client.query("ROLLBACK").catch(() => {});
@@ -133,7 +141,7 @@ exports.getTask = async (req, res) => {
                         json_agg(
                             json_build_object(
                                 'id', ta.id,
-                                'fileUrl', ta.fileUrl
+                                'fileUrl', '/taskRoutes/attachments/' || ta.id::text
                             )
                         ) FILTER (WHERE ta.id IS NOT NULL),
                         '[]'
@@ -156,7 +164,7 @@ exports.getTask = async (req, res) => {
                         json_agg(
                             json_build_object(
                                 'id', ta.id,
-                                'fileUrl', ta.fileUrl
+                                'fileUrl', '/taskRoutes/attachments/' || ta.id::text
                             )
                         ) FILTER (WHERE ta.id IS NOT NULL),
                         '[]'
@@ -256,6 +264,7 @@ exports.getTaskById = async (req, res) => {
 // ---------------
 
 exports.updateTask = async (req, res) => {
+    let attachmentSaved = false;
     try {
         const taskId = req.params.id;
         const userId = req.user.id;
@@ -280,6 +289,7 @@ exports.updateTask = async (req, res) => {
         const allowedStatus = ["pending", "in-progress", "completed"];
 
         if (status && !allowedStatus.includes(status)) {
+            await removeUploadedFile(req.file);
             return res.status(400).json({
                 success: false,
                 message: "Invalid status value"
@@ -330,6 +340,7 @@ exports.updateTask = async (req, res) => {
         const result = await db.query(query, values);
 
         if (result.rows.length === 0) {
+            await removeUploadedFile(req.file);
             return res.status(404).json({
                 success: false,
                 message: "Task not found or unauthorized"
@@ -354,17 +365,13 @@ exports.updateTask = async (req, res) => {
 
         }
 
-        // File support Logic 
-
         if (req.file) {
-
-            const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`;
-
-            await db.query(
-                `INSERT INTO "TaskAttachments"(taskId,fileUrl,uploadedBy)
-                values($1,$2,$3)`,
-                [taskId, fileUrl, userId]
-            );
+            await insertAttachmentMetadata(db, {
+                taskId,
+                uploadedBy: userId,
+                file: req.file,
+            });
+            attachmentSaved = true;
         }
 
         return res.status(200).json({
@@ -375,6 +382,9 @@ exports.updateTask = async (req, res) => {
         });
 
     } catch (error) {
+        if (req.file && !attachmentSaved) {
+            await removeUploadedFile(req.file);
+        }
         console.error("UPDATE TASK ERROR:", error);
         return res.status(500).json({
             success: false,
@@ -663,6 +673,7 @@ exports.markTaskHistoryAsRead = async (req, res) => {
 // Upload File API 
 // ---------------
 exports.uploadFile = async (req, res) => {
+    let attachmentSaved = false;
     try {
         if (!req.file) {
             return res.status(400).json({
@@ -671,19 +682,31 @@ exports.uploadFile = async (req, res) => {
             });
         }
 
+        const attachment = await insertAttachmentMetadata(db, {
+            uploadedBy: req.user.id,
+            file: req.file,
+        });
+        attachmentSaved = true;
+
         return res.status(200).json({
 
             success: true,
             message: "File uploaded successfully",
-            fileUrl: `${req.protocol}://${req.get("host")}/uploads/${req.file.filename}`
+            fileUrl: `/taskRoutes/attachments/${attachment.id}`
 
         });
 
     } catch (error) {
-        console.error("UPLOAD FILE ERROR:", error);;
+        if (req.file && !attachmentSaved) {
+            await removeUploadedFile(req.file);
+        }
+        console.error("UPLOAD FILE ERROR:", error.code || error.name);
         return res.status(500).json({
             success: false,
             message: "Server Error"
         });
     }
 };
+
+exports.downloadAttachment = attachmentDownloads.downloadById;
+exports.downloadLegacyAttachment = attachmentDownloads.downloadLegacyUrl;

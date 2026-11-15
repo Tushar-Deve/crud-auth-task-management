@@ -23,7 +23,6 @@ const BACKGROUND_IMAGE =
   "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80";
 
 
-
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -322,13 +321,8 @@ export default function LoginPage() {
                   {/* Admin login */}
                   <div className="rounded-xl border border-teal-400/20 bg-teal-500/10 p-4">
                     <div className="mb-2 flex items-center gap-2">
-                      <Shield
-                        className="h-4 w-4 text-teal-300"
-                        aria-hidden="true"
-                      />
-                      <h3 className="text-lg font-bold text-white">
-                        Admin Login
-                      </h3>
+                      <Shield className="h-4 w-4 text-teal-300" aria-hidden="true" />
+                      <h3 className="text-lg font-bold text-white">Admin Login</h3>
                     </div>
                     <ul className="space-y-1.5 text-sm text-slate-300">
                       <li>• Email: testadmin@gmail.com</li>
@@ -339,10 +333,7 @@ export default function LoginPage() {
                   {/* User login */}
                   <div className="rounded-xl border border-teal-400/20 bg-teal-500/10 p-4">
                     <div className="mb-2 flex items-center gap-2">
-                      <User
-                        className="h-4 w-4 text-teal-300"
-                        aria-hidden="true"
-                      />
+                      <User className="h-4 w-4 text-teal-300" aria-hidden="true" />
                       <h3 className="text-lg font-bold text-white">User Login</h3>
                     </div>
                     <ul className="space-y-1.5 text-sm text-slate-300">

@@ -5,7 +5,7 @@ import { Download, Eye } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
-import { getMyTasks, submitTask } from "@/services/user/userTaskService";
+import { downloadTaskAttachment, getMyTasks, submitTask } from "@/services/user/userTaskService";
 import Navbar from "@/components/dashboard/Navbar";
 import Sidebar from "@/components/dashboard/Sidebar";
 import Pagination from "@/components/reusable/pagination";
@@ -222,17 +222,9 @@ export default function MyTasksPage() {
   // Download Attachment
   // -------------------------
 
-  const handleDownload = async (
-    fileUrl: string
-  ) => {
+  const handleDownload = async (attachmentId: number) => {
     try {
-      const response = await fetch(fileUrl);
-
-      if (!response.ok) {
-        throw new Error("File download failed");
-      }
-
-      const blob = await response.blob();
+      const blob = await downloadTaskAttachment(attachmentId);
 
       const url =
         window.URL.createObjectURL(blob);
@@ -242,11 +234,7 @@ export default function MyTasksPage() {
 
       link.href = url;
 
-      const fileName =
-        fileUrl.split("/").pop() ||
-        "attachment";
-
-      link.download = fileName;
+      link.download = `task-attachment-${attachmentId}.pdf`;
 
       document.body.appendChild(link);
 
@@ -255,7 +243,7 @@ export default function MyTasksPage() {
       link.remove();
 
       window.URL.revokeObjectURL(url);
-    } catch (error) {
+    } catch {
 
       toast.error(
         "Unable to download file."
@@ -514,15 +502,14 @@ export default function MyTasksPage() {
                             {task.attachments && task.attachments.length > 0 && (
                               <div className="flex flex-wrap items-center gap-2">
                                 {task.attachments.map((attachment) => {
-                                  const fileName =
-                                    attachment.fileUrl.split("/").pop() || "Attachment";
+                                  const fileName = `Attachment ${attachment.id}`;
 
                                   return (
                                     <button
                                       key={attachment.id}
                                       type="button"
                                       onClick={() =>
-                                        handleDownload(attachment.fileUrl)
+                                        handleDownload(attachment.id)
                                       }
                                       title={fileName}
                                       className="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-teal-700 via-teal-600 to-teal-600 px-3 py-2 text-sm font-medium text-white shadow-lg shadow-teal-600/20 transition-all duration-200 hover:from-teal-600 hover:via-teal-400 hover:to-teal-400 focus:outline-none focus:ring-2 focus:ring-teal-600/30"

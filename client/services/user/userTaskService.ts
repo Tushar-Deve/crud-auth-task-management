@@ -26,3 +26,15 @@ export const submitTask = async (
 
   return response.data;
 };
+
+export const downloadTaskAttachment = async (attachmentId: number | string) => {
+  const id = String(attachmentId);
+  if (!/^\d+$/.test(id)) {
+    throw new Error("Attachment not found");
+  }
+
+  const response = await api.get(`/taskRoutes/attachments/${id}`, {
+    responseType: "blob",
+  });
+  return response.data as Blob;
+};
